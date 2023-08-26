@@ -50,9 +50,13 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.subheader h3{
+  margin-top: 0px;
+}
 
 .logo h1{
   font-weight: 500;
+  margin-bottom: 10px;
 }
 
 .non-header {
