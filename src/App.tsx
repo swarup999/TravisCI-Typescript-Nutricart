@@ -1,27 +1,43 @@
 // import { useState } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
 
 function App() {
+  const [needInfo, setNeedInfo] = useState(false);
+  useEffect(() => {
+    chrome.storage.sync.get(['Name'], (result) => {
+      if(!result.Name) {
+        setNeedInfo(true);
+      } else {
+        setNeedInfo(false);
+      }
+    });
+  });
+
   return (
     <div className="extension-container">
       <Header></Header>
       <div className="non-header">
-        <div className="overviews">
-          <h2>Heads Up!</h2>
-          <Overview></Overview>
-          <Overview></Overview>
-          <Overview></Overview>
-        </div>
-        <div className="calculations">
-          <div className="calculation-header">
-            <h2>Details</h2>
+        {
+          needInfo ? <InfoForm /> :
+          <>
+          <div className="overviews">
+            <h2>Heads Up!</h2>
+            <Overview></Overview>
+            <Overview></Overview>
+            <Overview></Overview>
           </div>
-          <Calculations></Calculations>
-          <Calculations></Calculations>
-          <Calculations></Calculations>
-        </div>
+          <div className="calculations">
+            <div className="calculation-header">
+              <h2>Details</h2>
+            </div>
+            <Calculations></Calculations>
+            <Calculations></Calculations>
+            <Calculations></Calculations>
+          </div>
+          </>
+        }
         <Footer></Footer>
       </div>
     </div>
@@ -157,4 +173,94 @@ function Footer() {
     </div>
   );
 }
+
+declare namespace chrome.storage {
+  interface StorageArea {
+    get(
+      keys: string | string[] | null,
+      callback: (result: { [key: string]: any }) => void
+    ): void;
+
+    set(
+      items: { [key: string]: any },
+      callback?: () => void
+    ): void;
+  }
+
+  const sync: StorageArea;
+}
+
+function InfoForm() {
+  // chrome.storage.sync.set({name: "x"}, function() {
+  //   console.log("Data saved");
+  // });
+
+  // useEffect(() => {
+  //   chrome.storage.sync.get(['name'], (result) => {
+  //     console.log(result);
+  //   });
+  // }, []);
+
+  const requiredInfo = [
+    'Name',
+    'Gender',
+    'Weight',
+    'Height',
+    'Age',
+  ];
+
+  const advancedInfo = [
+    'Calories',
+    'Protein',
+    'Carbs',
+    'Fat',
+    'Fibre',
+    'Sodium',
+  ];
+
+  interface FormData {
+    [key: string]: string; 
+  }
+
+  const [formData, setFormData ] = useState<FormData>({});
+
+  return (
+    <form onSubmit={(e) => {
+      Object.keys(formData).forEach((key: any) => {
+        chrome.storage.sync.set({ [key]: formData[key]}, function() {
+          console.log(`${key} has been set to ${formData[key]}`);
+        });
+      });
+    }}>
+      {requiredInfo.map((item: string) => {
+        return (
+          <div key={item}>
+            <label>{item}</label>
+            <input id={item} type="text" required={true} onChange={(event) => {
+              let newFormData = {...formData};
+              newFormData[item] = event.target.value;
+              setFormData(newFormData);
+              console.log(formData);
+            }}/>
+          </div>
+        );
+      })}
+      {advancedInfo.map((item: string) => {
+        return (
+          <div key={item}>
+            <label>{item}</label>
+            <input id={item} type="text" required={false} onChange={(event) => {
+              let newFormData = {...formData};
+              newFormData[item] = event.target.value;
+              setFormData(newFormData);
+              console.log(formData);
+            }}/>
+          </div>
+        );
+      })}
+      <button type="submit">OK</button>
+    </form>
+  );
+}
+
 export default App;
