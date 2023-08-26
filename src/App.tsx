@@ -1,13 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
 import { getProteins, getProteinTotal } from "./assets/miranda";
 
 // checks if the extension is installed for the first time
-chrome.storage.sync.get('isFirstInstallation', (result) => {
+chrome.storage.local.get('isFirstInstallation', (result) => {
   if (result.isFirstInstallation) {
     console.log('First installation');
-    chrome.storage.sync.set({ isFirstInstallation: false });
+    chrome.storage.local.set({ isFirstInstallation: false });
   } else {
     console.log('Not first installation');
   }
@@ -120,20 +121,21 @@ type calcProp = {
 
 function Calculations({ listFn, totalFn } : calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(await listFn())
+      setData(await listFn())
     };
-  
     fetchData()
-      // make sure to catch any error
       .catch(console.error);;
-  }, [listFn])
+  }, [listFn, data])
 
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
+  if("list" in data)
+    console.log(data.list);
   return (
     <>
       <div className="detail-container">
@@ -153,31 +155,12 @@ function Calculations({ listFn, totalFn } : calcProp) {
           ""
         ) : (
           <>
+            {/* {"list" in data ? data.list.map : ""} */}
             <div className="detail-element">
               <div className="item-name-icon">
                 <img src="https://placehold.co/85" />
                 <div className="item-name">
                   <h3>Free From Chicken Thigh, Boneless, Skinless, Club Pack</h3>
-                  <h4>3.8kg</h4>
-                </div>
-              </div>
-              <h2>54g</h2>
-            </div>
-            <div className="detail-element">
-              <div className="item-name-icon">
-                <img src="https://placehold.co/85" />
-                <div className="item-name">
-                  <h3>PC Chicken Thighs</h3>
-                  <h4>3.8kg</h4>
-                </div>
-              </div>
-              <h2>54g</h2>
-            </div>
-            <div className="detail-element">
-              <div className="item-name-icon">
-                <img src="https://placehold.co/85" />
-                <div className="item-name">
-                  <h3>PC Chicken Thighs</h3>
                   <h4>3.8kg</h4>
                 </div>
               </div>

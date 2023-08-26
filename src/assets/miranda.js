@@ -91,6 +91,7 @@ const testProteins =
 {
   "type": "protein",
   "total": 12,
+  "expected": 1200,
   "list": [
       {
         "name" : "costco chicken thigh",
