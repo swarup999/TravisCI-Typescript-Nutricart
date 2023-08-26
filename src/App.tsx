@@ -4,10 +4,10 @@ import "./App.css";
 import "normalize.css";
 
 // checks if the extension is installed for the first time
-chrome.storage.local.get('isFirstInstallation', (result) => {
+chrome.storage.sync.get('isFirstInstallation', (result) => {
   if (result.isFirstInstallation) {
     console.log('First installation');
-    chrome.storage.local.set({ isFirstInstallation: false });
+    chrome.storage.sync.set({ isFirstInstallation: false });
   } else {
     console.log('Not first installation');
   }
