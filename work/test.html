@@ -1,37 +1,12 @@
-const cheerio = require('cheerio');
-const request = require('request');
-
-
-//Web scraping for the query
-function grabItems() {
-    var items = [];
-    const html = document.documentElement.innerHTML;
-
-    const $ = cheerio.load(html);
-
-    $('div.e-k008qs').each(function(i, elem) {
-		var item = {};
-        $(this).find('img').each(function(i, elem) {
-            const alt = $(this).attr('alt');
-            const src = $(this).attr('src');
-            item['name'] = alt;
-			item['src'] = src;
-        });
-        $(this).find('div.e-kdfzba').each(function(i, elem) {
-			const text = $(this).text();
-			weight = text.match(/(\d+(?:\.\d+)?)\s*(a-zA-Z)/);
-			item['weight'] = weight;
-        });
-        $(this).find('span.e-1u7zzcn').each(function(i, elem) {
-            const text = $(this).text();
-            number = text.split(" ")[0];
-			item['quantity'] = number;
-        });
-		items.push(item);
-    });
-
-    return items;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    // API request
 
 const requestAPI = async (weight, quantity, name) => {
     // weight should include unit (g, oz, etc)
@@ -90,10 +65,8 @@ function onPopupOpen() {
     // Imagine if we use an object like this to store the user's current cart data
     var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
 
-    let items = grabItems();
-    // line below is just for testing
-    //let items = [{'name': 'apple', 'weight': '100g', 'quantity': '1'}, {'name': 'banana', 'weight': '100g', 'quantity': '1'}, {'name': 'orange', 'weight': '100g', 'quantity': '1'}]
-    
+    //let items = grabItems();
+    let items = [{'name': 'apple', 'weight': '100g', 'quantity': '1'}, {'name': 'banana', 'weight': '100g', 'quantity': '1'}, {'name': 'orange', 'weight': '100g', 'quantity': '1'}]
     for (let item of items) {
         let itemValue = requestAPI(item['weight'], item['quantity'], item['name']);
 
@@ -108,4 +81,10 @@ function onPopupOpen() {
     return cart;
 }
 
-document.addEventListener('DOMContentLoaded', onPopupOpen);
+onPopupOpen();
+
+</script>
+<body>
+    
+</body>
+</html>

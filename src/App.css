@@ -143,8 +143,9 @@ body {
 
 .detail-number {
   position: absolute;
-  left: 453px;
   top: 0px;
+  text-align: right;
+  width: 100%;
 }
 
 .detail-clicky {
