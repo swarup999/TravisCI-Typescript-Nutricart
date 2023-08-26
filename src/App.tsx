@@ -3,6 +3,16 @@ import { useState } from "react";
 import "./App.css";
 import "normalize.css";
 
+// checks if the extension is installed for the first time
+chrome.storage.local.get('isFirstInstallation', (result) => {
+  if (result.isFirstInstallation) {
+    console.log('First installation');
+    chrome.storage.local.set({ isFirstInstallation: false });
+  } else {
+    console.log('Not first installation');
+  }
+});
+
 function App() {
   return (
     <div className="extension-container">
