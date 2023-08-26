@@ -6,27 +6,18 @@ import "normalize.css";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 
-// checks if the extension is installed for the first time
-// chrome.storage.local.get('isFirstInstallation', (result) => {
-//   if (result.isFirstInstallation) {
-//     console.log('First installation');
-//     chrome.storage.local.set({ isFirstInstallation: false });
-//   } else {
-//     console.log('Not first installation');
-//   }
-// });
 
 function App() {
   const [needInfo, setNeedInfo] = useState(false);
-  // useEffect(() => {
-  //   chrome.storage.sync.get(['Name'], (result) => {
-  //     if(!result.Name) {
-  //       setNeedInfo(true);
-  //     } else {
-  //       setNeedInfo(false);
-  //     }
-  //   });
-  // });
+  useEffect(() => {
+    chrome.storage.sync.get(['Name'], (result) => {
+      if(!result.Name) {
+        setNeedInfo(true);
+      } else {
+        setNeedInfo(false);
+      }
+    });
+  });
 
   return (
     <div className="extension-container">
@@ -217,7 +208,7 @@ function Calculations({ listFn, type }: calcProp) {
                       <img src={element.src} />
                       <div className="item-name">
                         <h3>{element.name}</h3>
-                        <h4>{element.weight}</h4>
+                        <h4>{element.weight}kg</h4>
                       </div>
                     </div>
                     <h2>{element.total}g</h2>
@@ -262,15 +253,15 @@ declare namespace chrome.storage {
 }
 
 function InfoForm() {
-  // chrome.storage.sync.set({name: "x"}, function() {
-  //   console.log("Data saved");
-  // });
+  chrome.storage.sync.set({name: "x"}, function() {
+    console.log("Data saved");
+  });
 
-  // useEffect(() => {
-  //   chrome.storage.sync.get(['name'], (result) => {
-  //     console.log(result);
-  //   });
-  // }, []);
+  useEffect(() => {
+    chrome.storage.sync.get(['name'], (result) => {
+      console.log(result);
+    });
+  }, []);
 
   const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age"];
 
