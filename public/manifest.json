@@ -1,6 +1,6 @@
 {
-  "name": "Chrome React SEO Extension",
-  "description": "The power of React and TypeScript for building interactive Chrome extensions",
+  "name": "NutriCart",
+  "description": "A helping hand to making healthy grocery choices",
   "version": "1.0",
   "action": {
       "default_popup": "index.html",
@@ -9,5 +9,11 @@
   "icons": {
   },
   "manifest_version": 3,
-  "permissions": ["storage"]
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "storage"
+  ]
 }
