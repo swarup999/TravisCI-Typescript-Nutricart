@@ -1,4 +1,4 @@
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.local.set({ isFirstInstallation: true });
+    chrome.storage.sync.set({ isFirstInstallation: true });
 });
   
