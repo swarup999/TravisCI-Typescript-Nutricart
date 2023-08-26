@@ -87,23 +87,34 @@ const getProteins = () => {
   });
 }
 
+const emptyObject = {
+  "type": undefined, 
+  "total": undefined,
+  "expected": undefined,
+  "list": [
+  ]
+}
+
 const testProteins = 
 {
   "type": "protein",
-  "total": 12,
-  "expected": 1200,
+  "total": 99,
+  "expected": 100,
   "list": [
       {
         "name" : "costco chicken thigh",
         "weight": 3.8,
-        "src" : "https://placehold.co/86"
+        "src" : "https://placehold.co/85",
+        "total": 14
       },
       {
         "name" : "beef",
         "weight": 3.8,
-        "src" : "https://placehold.co/86"
+        "src" : "https://placehold.co/85",
+        "total": 14
+
       }
     ]
   }
 const getProteinTotal = () => 12;
-export {getProteins, getProteinTotal};
+export {getProteins, getProteinTotal, emptyObject};
