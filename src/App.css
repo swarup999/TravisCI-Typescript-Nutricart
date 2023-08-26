@@ -1,38 +1,213 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: "Inter";
+  src: url("/src/assets/Inter-VariableFont_slnt,wght.ttf");
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html {
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+a {
+  cursor: pointer;
+}
+
+#root {
+  margin: 0 auto;
+  box-sizing: border-box;
+  --h-padding: 20px;
+  --color-dark-green: #191F03;
+  --color-white: #FFFDF3;
+  --color-mint: #DEEDD6;
+  --color-red: #E37770;
+  --color-yellow: #F6C47A;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", "Futura", "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source-sans-pro,
+    sans-serif;
+}
+
+.extension-container {
+  padding: 0px 25px;
+  width: 600px;
+  background-color: var(--color-mint);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo h1{
+  font-weight: 500;
+}
+
+.non-header {
+  box-shadow: rgb(0, 0, 0, 0.16) 0px 2px 8px;
+  background-color: var(--color-white);
+  margin: 0px -25px;
+  padding: 0px 25px;
+}
+
+.settings {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.overview-tab {
+  display: flex;
+  justify-content: space-between;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.overview-tab * {
+  margin: 0px;
+}
+.overview-container {
+  box-shadow: rgb(0, 0, 0, 0.16) 0px 2px 8px;
+  padding: 20px 25px;
+  border-radius: 6px;
+  margin: 20px 0px;
+}
+
+.detail-tab {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+  margin-top: -20px;
+}
+
+.colorline {
+  height: 5px;
+  padding: 8px 25px;
+  margin: -8px -25px;
+  margin-bottom: -20px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-top: 15px;
+  border-radius: 0px 0px 6px 6px;
+}
+
+.overview-container p {
+  margin: 12px 0px;
+}
+
+.detail-tab h2{
+  margin: 0px;
+}
+
+
+.detail-tab,
+.overview-tab{
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 8px 25px;
+  margin: -8px -25px;
+  text-decoration: none;
+  color: var(--color-dark-green);
+  box-sizing: content-box;
+  margin-top: -20px;
+  margin-bottom: -20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.detail-container,
+.overview-container {
+  transition: all 130ms ease-out;
+}
+.detail-container:hover,
+.overview-container:hover {
+  transform: scale(1.010)
+  /* background-color: #191F0311 */
+}
+.detail-tab *,
+.overview-tab * {
+  font-weight: 500;
+}
+
+.calculations {
+  margin-top: 20px;
+}
+
+.overviews > h2,
+.calculation-header > h2 {
+  font-weight: 600;
+}
+
+.overview-li li {
+  flex: 1;
+}
+
+.calculation-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detail-container {
+  border-radius: 6px;
+  box-shadow: rgb(0, 0, 0, 0.16) 0px 2px 8px;
+  padding: 20px 25px;
+  margin: 20px 0px;
+}
+
+.detail-container a {
+  display: flex;
+}
+
+.detail-element {
+  display: flex;
+  justify-content: space-between;
+  margin: 18px 0px;
+  align-items: center;
+}
+
+
+
+.divider {
+  height: 1px;
+  border-radius: 20px;
+  background-color: black;
+}
+.detail-total {
+  /* display: flex;
+  justify-content: space-between; */
+  margin-top: 20px;
+  text-align: right;
+}
+
+.detail-total * {
+  margin: 0;
+}
+
+.detail-total h3 {
+  margin-top: 7px;
+}
+
+.item-name * {
+  margin: 6px 0px;
+}
+.item-name-icon {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.footer {
+  text-align: center;
 }
