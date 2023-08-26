@@ -4,34 +4,26 @@ import "./App.css";
 import "normalize.css";
 import { getProteins, getProteinTotal } from "./assets/miranda";
 
-// checks if the extension is installed for the first time
-chrome.storage.local.get('isFirstInstallation', (result) => {
-  if (result.isFirstInstallation) {
-    console.log('First installation');
-    chrome.storage.local.set({ isFirstInstallation: false });
-  } else {
-    console.log('Not first installation');
-  }
-});
-
 function App() {
-  const [needInfo, setNeedInfo] = useState(false);
+  const [name, setName] = useState("");
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
-      if(!result.Name) {
-        setNeedInfo(true);
-      } else {
-        setNeedInfo(false);
-      }
+      setName(result.Name);
     });
   });
 
+  const updateName = () => {
+    setName("");
+  };
+
+  console.log(`name is ${name}`);
+
   return (
     <div className="extension-container">
-      <Header></Header>
+      <Header name={name} updateName={updateName}></Header>
       <div className="non-header">
         {
-          needInfo ? <InfoForm /> :
+          !name ? <InfoForm /> :
           <>
           <div className="overviews">
             <h2>Heads Up!</h2>
@@ -53,12 +45,7 @@ function App() {
   );
 }
 
-function Header() {
-  let name = "";
-
-  chrome.storage.sync.get(['Name'], (result) => {
-    name = result.Name;
-  });
+function Header(props: any) {
 
   return (
     <>
@@ -68,15 +55,19 @@ function Header() {
             {/* <img src="https://placehold.co/300x60" /> */}
             <h1>nutricart</h1>
           </div>
-          {name &&
+          {props.name &&
           <div className="subheader">
-            <h3>{`Welcome back, ${name}!`}</h3>
+            <h3>{`Welcome back, ${props.name}!`}</h3>
           </div> 
           }
         </div>
 
         <div className="settings">
-          <img src="https://placehold.co/60" alt="" />
+          <a title="Reset User Info" onClick={() => {
+            chrome.storage.sync.set({ ['Name']: ""});
+            props.updateName();
+            console.log('clicked button');
+          }}><img src="https://placehold.co/60" alt="" /></a>
         </div>
       </div>
     </>
@@ -89,6 +80,9 @@ function Overview() {
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
+
+  const protein = getProteins();
+  console.log(`protein is ${protein}`);
 
   return (
     <>
@@ -204,22 +198,13 @@ declare namespace chrome.storage {
 }
 
 function InfoForm() {
-  // chrome.storage.sync.set({name: "x"}, function() {
-  //   console.log("Data saved");
-  // });
-
-  // useEffect(() => {
-  //   chrome.storage.sync.get(['name'], (result) => {
-  //     console.log(result);
-  //   });
-  // }, []);
-
   const requiredInfo = [
     'Name',
     'Gender',
     'Weight',
     'Height',
     'Age',
+    'Days'
   ];
 
   const advancedInfo = [
@@ -240,29 +225,58 @@ function InfoForm() {
   return (
     <form onSubmit={(e) => {
       Object.keys(formData).forEach((key: any) => {
-        chrome.storage.sync.set({ [key]: formData[key]}, function() {
-          console.log(`${key} has been set to ${formData[key]}`);
-        });
+        chrome.storage.sync.set({ [key]: formData[key]});
       });
     }}>
-      {requiredInfo.map((item: string) => {
-        return (
-          <div key={item}>
-            <label>{item}</label>
-            <input id={item} type="text" required={true} onChange={(event) => {
-              let newFormData = {...formData};
-              newFormData[item] = event.target.value;
-              setFormData(newFormData);
-              console.log(formData);
-            }}/>
-          </div>
-        );
-      })}
+      <div key="Name">
+        <label>Name:</label>
+        <input type="text" required={true} onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Name"] = e.target.value;
+          setFormData(newFormData);
+        }}></input>
+      </div>
+      <div key="Gender">
+        <label>Gender:</label>
+        <select onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Gender"] = e.target.value;
+          setFormData(newFormData);
+        }}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+      </div>
+      <div key="Weight">
+        <label>Weight (kg):</label>
+        <input type="number" required={true} min={1} max={300} onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Weight"] = e.target.value;
+          setFormData(newFormData);
+        }}></input>
+      </div>
+      <div key="Height">
+        <label>Height (cm):</label>
+        <input type="number" required={true} min={1} max={300} onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Height"] = e.target.value;
+          setFormData(newFormData);
+        }}></input>
+      </div>
+      <div key="Age">
+        <label>Age:</label>
+        <input type="number" required={true} min={1} max={200} onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Age"] = e.target.value;
+          setFormData(newFormData);
+        }}></input>
+      </div>
       {advancedInfo.map((item: string) => {
         return (
           <div key={item}>
-            <label>{item}</label>
-            <input id={item} type="text" required={false} onChange={(event) => {
+            <label>{`Target ${item} (Optional):`}</label>
+            <input id={item} type="number" required={false} min={1} max={10000} onChange={(event) => {
               let newFormData = {...formData};
               newFormData[item] = event.target.value;
               setFormData(newFormData);
@@ -271,6 +285,15 @@ function InfoForm() {
           </div>
         );
       })}
+      <div key="Frequency">
+        <label>I shop once every </label>
+        <input type="number" required={true} min={1} max={1000} onChange={(e) => {
+          let newFormData = {...formData};
+          newFormData["Days"] = e.target.value;
+          setFormData(newFormData);
+        }}></input>
+        <label> days.</label>
+      </div>
       <button type="submit">OK</button>
     </form>
   );
