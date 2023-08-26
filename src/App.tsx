@@ -53,6 +53,12 @@ function App() {
 }
 
 function Header() {
+  let name = "";
+
+  chrome.storage.sync.get(['Name'], (result) => {
+    name = result.Name;
+  });
+
   return (
     <>
       <div className="header">
@@ -61,9 +67,11 @@ function Header() {
             {/* <img src="https://placehold.co/300x60" /> */}
             <h1>nutricart</h1>
           </div>
+          {name &&
           <div className="subheader">
-            <h3>Welcome back, Victor!</h3>
-          </div>
+            <h3>{`Welcome back, ${name}!`}</h3>
+          </div> 
+          }
         </div>
 
         <div className="settings">
