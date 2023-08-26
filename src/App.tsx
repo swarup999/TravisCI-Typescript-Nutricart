@@ -43,7 +43,7 @@ function Header() {
         </div>
 
         <div className="settings">
-          <img src="https://placehold.co/60" />
+          <img src="https://placehold.co/60" alt=""/>
         </div>
       </div>
     </>
@@ -90,19 +90,22 @@ function Calculations() {
   return (
     <>
       <div className="detail-container">
-        <a
-          onClick={() => {
-            toggleCollapse();
-          }}
-          className="detail-tab"
-        >
-          <h2>Protein</h2>
-        {isCollapsed ? (
-          <h2>117g</h2>
-        ) : (
-          ""
-        )}
-        </a>
+        <div style={{position: "relative"}}>
+          <a
+            onClick={() => {
+              toggleCollapse();
+            }}
+            className="detail-tab"
+          >
+            <h2>Protein</h2>
+          </a>
+          {isCollapsed ? (
+            <h2 className="detail-number">117g</h2>
+          ) : (
+            ""
+          )}
+        </div>
+
         {isCollapsed ? (
           ""
         ) : (
