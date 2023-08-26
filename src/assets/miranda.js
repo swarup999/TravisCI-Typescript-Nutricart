@@ -78,3 +78,31 @@ const calculateNutrition = (gender, weight, height, age, calories, protein, carb
     // returns an object with all the nutrition values that the user should consume
     return {calories: calories, protein: protein, carbs: carbs, fat: fat, fibre: fibre};
 }
+const getProteins = () => {
+  //fake api call
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(testProteins);
+    }, 2000);
+  });
+}
+
+const testProteins = 
+{
+  "type": "protein",
+  "total": 12,
+  "list": [
+      {
+        "name" : "costco chicken thigh",
+        "weight": 3.8,
+        "src" : "https://placehold.co/86"
+      },
+      {
+        "name" : "beef",
+        "weight": 3.8,
+        "src" : "https://placehold.co/86"
+      }
+    ]
+  }
+const getProteinTotal = () => 12;
+export {getProteins, getProteinTotal};

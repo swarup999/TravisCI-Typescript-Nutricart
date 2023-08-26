@@ -1,7 +1,7 @@
-// import { useState } from "react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
+import { getProteins, getProteinTotal } from "./assets/miranda";
 
 // checks if the extension is installed for the first time
 chrome.storage.sync.get('isFirstInstallation', (result) => {
@@ -28,9 +28,7 @@ function App() {
           <div className="calculation-header">
             <h2>Details</h2>
           </div>
-          <Calculations></Calculations>
-          <Calculations></Calculations>
-          <Calculations></Calculations>
+          <Calculations totalFn={getProteinTotal} listFn={getProteins}></Calculations>
         </div>
         <Footer></Footer>
       </div>
@@ -53,7 +51,7 @@ function Header() {
         </div>
 
         <div className="settings">
-          <img src="https://placehold.co/60" alt=""/>
+          <img src="https://placehold.co/60" alt="" />
         </div>
       </div>
     </>
@@ -91,8 +89,23 @@ function Overview() {
   );
 }
 
-function Calculations() {
+type calcProp = {
+  listFn: Function;
+  totalFn: Function;
+};
+
+function Calculations({ listFn, totalFn } : calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(await listFn())
+    };
+  
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);;
+  }, [listFn])
 
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
@@ -100,7 +113,7 @@ function Calculations() {
   return (
     <>
       <div className="detail-container">
-        <div style={{position: "relative"}}>
+        <div style={{ position: "relative" }}>
           <a
             onClick={() => {
               toggleCollapse();
@@ -109,53 +122,49 @@ function Calculations() {
           >
             <h2>Protein</h2>
           </a>
-          {isCollapsed ? (
-            <h2 className="detail-number">117g</h2>
-          ) : (
-            ""
-          )}
+          {isCollapsed ? <h2 className="detail-number">117g</h2> : ""}
         </div>
 
         {isCollapsed ? (
           ""
         ) : (
-        <>
-          <div className="detail-element">
-            <div className="item-name-icon">
-              <img src="https://placehold.co/85" />
-              <div className="item-name">
-                <h3>Free From Chicken Thigh, Boneless, Skinless, Club Pack</h3>
-                <h4>3.8kg</h4>
+          <>
+            <div className="detail-element">
+              <div className="item-name-icon">
+                <img src="https://placehold.co/85" />
+                <div className="item-name">
+                  <h3>Free From Chicken Thigh, Boneless, Skinless, Club Pack</h3>
+                  <h4>3.8kg</h4>
+                </div>
               </div>
+              <h2>54g</h2>
             </div>
-            <h2>54g</h2>
-          </div>
-          <div className="detail-element">
-            <div className="item-name-icon">
-              <img src="https://placehold.co/85" />
-              <div className="item-name">
-                <h3>PC Chicken Thighs</h3>
-                <h4>3.8kg</h4>
+            <div className="detail-element">
+              <div className="item-name-icon">
+                <img src="https://placehold.co/85" />
+                <div className="item-name">
+                  <h3>PC Chicken Thighs</h3>
+                  <h4>3.8kg</h4>
+                </div>
               </div>
+              <h2>54g</h2>
             </div>
-            <h2>54g</h2>
-          </div>
-          <div className="detail-element">
-            <div className="item-name-icon">
-              <img src="https://placehold.co/85" />
-              <div className="item-name">
-                <h3>PC Chicken Thighs</h3>
-                <h4>3.8kg</h4>
+            <div className="detail-element">
+              <div className="item-name-icon">
+                <img src="https://placehold.co/85" />
+                <div className="item-name">
+                  <h3>PC Chicken Thighs</h3>
+                  <h4>3.8kg</h4>
+                </div>
               </div>
+              <h2>54g</h2>
             </div>
-            <h2>54g</h2>
-          </div>
-          <div className="divider"></div>
-          <div className="detail-total">
-            <h2>99g</h2>
-            <h3>total per serving</h3>
-          </div>
-        </>
+            <div className="divider"></div>
+            <div className="detail-total">
+              <h2>99g</h2>
+              <h3>total per serving</h3>
+            </div>
+          </>
         )}
         <div className="colorline" style={{ backgroundColor: "var(--color-red)" }}></div>
       </div>
