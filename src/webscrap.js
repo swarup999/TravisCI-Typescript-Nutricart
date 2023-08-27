@@ -1,11 +1,13 @@
 const cheerio = require('cheerio');
-const request = require('request');
 
 
 //Web scraping for the query
 function grabItems() {
+    console.log("grabbing items")
     var items = [];
+
     const html = document.documentElement.innerHTML;
+    console.log(html);
 
     const $ = cheerio.load(html);
 
@@ -19,12 +21,12 @@ function grabItems() {
         });
         $(this).find('div.e-kdfzba').each(function(i, elem) {
 			const text = $(this).text();
-			weight = text.match(/(\d+(?:\.\d+)?)\s*(a-zA-Z)/);
+			let weight = text.match(/(\d+(?:\.\d+)?)\s*(a-zA-Z)/);
 			item['weight'] = weight;
         });
         $(this).find('span.e-1u7zzcn').each(function(i, elem) {
             const text = $(this).text();
-            number = text.split(" ")[0];
+            let number = text.split(" ")[0];
 			item['quantity'] = number;
         });
 		items.push(item);
@@ -108,4 +110,5 @@ function onPopupOpen() {
     return cart;
 }
 
+export default onPopupOpen;
 document.addEventListener('DOMContentLoaded', onPopupOpen);
