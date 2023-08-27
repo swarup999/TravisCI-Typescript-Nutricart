@@ -8,6 +8,8 @@ import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
 //import { on } from "events";
 
+const capitalizeStr = (string:any) => string.charAt(0).toUpperCase() + string.slice(1);
+
 type foodItem = {
   name: string;
   weight: number;
@@ -274,8 +276,6 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   //   fetchData().catch(console.error);
   // }, [listFn, data]);
 
-
-
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
@@ -283,7 +283,7 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   if (data.list.length === 0) return <></>;
   let severity;
   let text;
-  if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05 || data.total > data.expected * param) {
+  if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05) {
     severity = "mint";
     text = GOODTEXT;
   } else if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.15) {
@@ -385,7 +385,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
             }}
             className="detail-tab"
           >
-            <h2>{type}</h2>
+            <h2>{capitalizeStr(type)}</h2>
           </a>
           {isCollapsed ? (
             <h2 className="detail-number">
