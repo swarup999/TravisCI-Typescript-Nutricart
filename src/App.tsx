@@ -24,170 +24,6 @@ type macroData = {
   list: Array<foodItem>;
 };
 
-function App() {
-  //onPopupOpen();
-  const [name, setName] = useState("");
-  const [days, setDays] = useState(1);
-  useEffect(() => {
-    chrome.storage.sync.get(["Name"], (result) => {
-      setName(result.Name);
-    });
-    chrome.storage.sync.get(['Days'], (result) => {
-      setDays(result.Days);
-      console.log(result.Days);
-    });
-  });
-  const updateName = () => {
-    setName("");
-  };
-
-  const [proteinData, SetProteinData] = useState<macroData>({
-    type: "protein",
-    total: 0,
-    expected: 70,
-    list: [],
-  });
-
-  const [fatData, SetFatData] = useState<macroData>({
-    type: "fat",
-    total: 0,
-    expected: 65,
-    list: [],
-  });
-
-  const [carbsData, SetCarbsData] = useState<macroData>({
-    type: "carbs",
-    total: 0,
-    expected: 130,
-    list: [],
-  });
-
-  const [fibreData, SetFibreData] = useState<macroData>({
-    type: "fibre",
-    total: 0,
-    expected: 25,
-    list: [],
-  });
-
-  const [caloriesData, SetCaloriesData] = useState<macroData>({
-    type: "calories",
-    total: 0,
-    expected: 2250,
-    list: [],
-  });
-
-  useEffect(() => {
-    const key = setInterval(() => {
-      if (globalCart.protein) {
-        clearInterval(key);
-        let newProteinData = { ...proteinData };
-        let newFatData = { ...fatData };
-        let newFibreData = { ...fibreData };
-        let newCaloriesData = { ...caloriesData };
-        let newCarbsData = { ...carbsData };
-
-        // @ts-ignore: Unreachable code error
-        globalItems.forEach((item: any) => {
-        newProteinData.list = [...newProteinData.list, 
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.protein ? item.protein : 0
-          }
-        ];
-        newFatData.list = [...newFatData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.fat ? item.fat : 0
-          }
-        ];
-        newCarbsData.list = [...newCarbsData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.carbs ? item.carbs : 0
-          }
-        ];
-        newFibreData.list = [...newFibreData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.fibre ? item.fibre : 0
-          }
-        ];
-        newCaloriesData.list = [...newCaloriesData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.calories ? item.calories : 0
-          }
-        ];
-      });
-      console.log(`days are ${days}`);
-      newProteinData.expected *= days;
-      newProteinData.total += globalCart.protein;
-      SetProteinData(newProteinData);
-      newFatData.expected *= days;
-      newFatData.total += globalCart.fat;
-      SetFatData(newFatData);
-      newFibreData.expected *= days;
-      newFibreData.total += globalCart.fibre;
-      SetFibreData(newFibreData);
-      newCarbsData.expected *= days;
-      newCarbsData.total += globalCart.carbs;
-      SetCarbsData(newCarbsData);
-      newCaloriesData.expected *= days;
-      newCaloriesData.total += globalCart.calories;
-      SetCaloriesData(newCaloriesData);
-    }
-    }, 1000);
-    return () => {
-      clearInterval(key);
-    };
-  }, []);
-
-  let params = {};
-
-  return (
-    <div className="extension-container">
-      <Header name={name} updateName={updateName}></Header>
-      <div className="non-header">
-        {!name ? (
-          <InfoForm />
-        ) : (
-          <>
-            <div className="overviews">
-              <h2>Heads Up!</h2>
-              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Overview>
-              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Overview>
-              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Overview>
-              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={days}></Overview>
-              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Overview>
-            </div>
-            <div className="calculations">
-              <div className="calculation-header">
-                <h2>Details</h2>
-              </div>
-              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Calculations>
-              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Calculations>
-              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Calculations>
-              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={days}></Calculations>
-              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Calculations>
-            </div>
-          </>
-        )}
-        <Footer></Footer>
-      </div>
-    </div>
-  );
-}
-
 function Header(props: any) {
   // @ts-ignore: Unreachable code error
   useEffect(
@@ -287,10 +123,10 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   let severity;
   let text;
 
-  if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
+  if (Math.abs(data.expected - dailyTotal) < data.expected * 0.10) {
     text = GOODTEXT;
     severity = "mint";
-  } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.45) {
+  } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.20) {
     severity = "yellow";
     text = MEDTEXT;
   } else {
@@ -368,9 +204,9 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
+    if (Math.abs(data.expected - dailyTotal) < data.expected * 0.10) {
       severity = "mint";
-    } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.45) {
+    } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.20) {
       severity = "yellow";
     } else {
       console.log(dailyTotal);
@@ -808,6 +644,170 @@ function InfoForm() {
         ""
       )}
     </>
+  );
+}
+
+function App() {
+  //onPopupOpen();
+  const [name, setName] = useState("");
+  const [days, setDays] = useState(1);
+  useEffect(() => {
+    chrome.storage.sync.get(["Name"], (result) => {
+      setName(result.Name);
+    });
+    chrome.storage.sync.get(['Days'], (result) => {
+      setDays(result.Days);
+      console.log(result.Days);
+    });
+  });
+  const updateName = () => {
+    setName("");
+  };
+
+  const [proteinData, SetProteinData] = useState<macroData>({
+    type: "protein",
+    total: 0,
+    expected: 70,
+    list: [],
+  });
+
+  const [fatData, SetFatData] = useState<macroData>({
+    type: "fat",
+    total: 0,
+    expected: 65,
+    list: [],
+  });
+
+  const [carbsData, SetCarbsData] = useState<macroData>({
+    type: "carbs",
+    total: 0,
+    expected: 130,
+    list: [],
+  });
+
+  const [fibreData, SetFibreData] = useState<macroData>({
+    type: "fibre",
+    total: 0,
+    expected: 25,
+    list: [],
+  });
+
+  const [caloriesData, SetCaloriesData] = useState<macroData>({
+    type: "calories",
+    total: 0,
+    expected: 2250,
+    list: [],
+  });
+
+  useEffect(() => {
+    const key = setInterval(() => {
+      if (globalCart.protein) {
+        clearInterval(key);
+        let newProteinData = { ...proteinData };
+        let newFatData = { ...fatData };
+        let newFibreData = { ...fibreData };
+        let newCaloriesData = { ...caloriesData };
+        let newCarbsData = { ...carbsData };
+
+        // @ts-ignore: Unreachable code error
+        globalItems.forEach((item: any) => {
+        newProteinData.list = [...newProteinData.list, 
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.protein ? item.protein : 0
+          }
+        ];
+        newFatData.list = [...newFatData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.fat ? item.fat : 0
+          }
+        ];
+        newCarbsData.list = [...newCarbsData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.carbs ? item.carbs : 0
+          }
+        ];
+        newFibreData.list = [...newFibreData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.fibre ? item.fibre : 0
+          }
+        ];
+        newCaloriesData.list = [...newCaloriesData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.calories ? item.calories : 0
+          }
+        ];
+      });
+      console.log(`days are ${days}`);
+      newProteinData.expected *= days;
+      newProteinData.total += globalCart.protein;
+      SetProteinData(newProteinData);
+      newFatData.expected *= days;
+      newFatData.total += globalCart.fat;
+      SetFatData(newFatData);
+      newFibreData.expected *= days;
+      newFibreData.total += globalCart.fibre;
+      SetFibreData(newFibreData);
+      newCarbsData.expected *= days;
+      newCarbsData.total += globalCart.carbs;
+      SetCarbsData(newCarbsData);
+      newCaloriesData.expected *= days;
+      newCaloriesData.total += globalCart.calories;
+      SetCaloriesData(newCaloriesData);
+    }
+    }, 1000);
+    return () => {
+      clearInterval(key);
+    };
+  }, []);
+
+  let params = {};
+
+  return (
+    <div className="extension-container">
+      <Header name={name} updateName={updateName}></Header>
+      <div className="non-header">
+        {!name ? (
+          <InfoForm />
+        ) : (
+          <>
+            <div className="overviews">
+              <h2>Heads Up!</h2>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Overview>
+            </div>
+            <div className="calculations">
+              <div className="calculation-header">
+                <h2>Details</h2>
+              </div>
+              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Calculations>
+            </div>
+          </>
+        )}
+        <Footer></Footer>
+      </div>
+    </div>
   );
 }
 
