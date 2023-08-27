@@ -4,23 +4,124 @@ import "normalize.css";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
-import { on } from "events";
+//import { on } from "events";
+
+type foodItem = {
+  name: string;
+  weight: number;
+  src: string;
+  total: number;
+}
+
+type macroData = {
+  type: string;
+  total: number;
+  expected: number;
+  list: Array<foodItem>;
+};
 
 function App() {
   //onPopupOpen();
-  console.log(globalVar);
   const [name, setName] = useState("");
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
       setName(result.Name);
     });
   });
-
   const updateName = () => {
     setName("");
   };
 
-  console.log(`name is ${name}`);
+  const [proteinData, SetProteinData] = useState<macroData>({
+    type: "protein",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  const [fatData, SetFatData] = useState<macroData>({
+    type: "fat",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  useEffect(() => {
+    const key = setInterval(() => {
+      if(globalCart.protein) {
+        console.log(globalCart.protein);
+        clearInterval(key);
+        let newProteinData = {...proteinData};
+        let newFatData = {...fatData};
+        // @ts-ignore: Unreachable code error
+        globalItems.forEach((item: any) => {
+        newProteinData.list = [...newProteinData.list, 
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newFatData.list = [...newFatData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+      });
+      newProteinData.total += globalCart.protein;
+      console.log(newProteinData);
+      SetProteinData(newProteinData);
+      console.log(proteinData);
+
+      newFatData.total += globalCart.fat;
+      console.log(newFatData);
+      SetFatData(newFatData);
+      console.log(fatData);
+    }
+    }, 1000);
+    return () => {
+      clearInterval(key);
+    }
+  }, []);
+  
+
+
+  // useEffect(() => {
+  //   console.log('in globalCart use effect');
+  //   // @ts-ignore: Unreachable code error
+  //   console.log(JSON.stringify(window.globalCart));
+  //   // @ts-ignore: Unreachable code error
+  //   console.log(window.globalCart.protein);
+  //   let newProteinData = {...proteinData};
+  //   // @ts-ignore: Unreachable code error
+  //   newProteinData.total += window.globalCart.protein;
+  //   SetProteinData(newProteinData);
+  //   console.log(proteinData);
+  //   console.log(newProteinData);
+  //   // @ts-ignore: Unreachable code error
+  // }, [window.globalCart]);
+
+  // useEffect(() => {
+  //   console.log('in globalItems use effect');
+  //   let newProteinData = {...proteinData};
+  //   // @ts-ignore: Unreachable code error
+  //   globalItems.forEach((item: any) => {
+  //     newProteinData.list = [...newProteinData.list, 
+  //       {
+  //         name: item.name,
+  //         src: item.src,
+  //         weight: item.weight,
+  //         total: item.quantity
+  //       }
+  //     ];
+  //   });
+  //   SetProteinData(newProteinData);
+  //   // @ts-ignore: Unreachable code error
+  // }, [globalItems]);
 
   return (
     <div className="extension-container">
@@ -31,18 +132,18 @@ function App() {
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
+              <Overview listFn={getProteins} type={"protein"} realData={proteinData}></Overview>
+              {/* <Overview listFn={getProteins} type={"protein"}></Overview>
               <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview>
+              <Overview listFn={getProteins} type={"protein"}></Overview> */}
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              <Calculations listFn={getProteins} type={"Protein"}></Calculations>
+              {/* <Calculations listFn={getProteins} type={"Protein"}></Calculations>
               <Calculations listFn={getProteins} type={"Sodium"}></Calculations>
-              <Calculations listFn={getProteins} type={"Calories"}></Calculations>
+              <Calculations listFn={getProteins} type={"Calories"}></Calculations> */}
             </div>
           </>
         }
@@ -73,7 +174,6 @@ function Header(props: any) {
           <a title="Reset User Info" onClick={() => {
             chrome.storage.sync.set({ ['Name']: ""});
             props.updateName();
-            console.log('clicked button');
           }}><img src="https://placehold.co/60" alt="" /></a>
         </div>
       </div>
@@ -81,22 +181,26 @@ function Header(props: any) {
   );
 }
 
-function Overview({ listFn, type }: calcProp) {
+function Overview({ listFn, type, realData }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
-  const [data, setData] = useState<dataProp>(emptyObject);
+  // const [data, setData] = useState<dataProp>(emptyObject);
   const BADTEXT = "Does not hit your protein goal per serving!";
   const MEDTEXT = "Almost at your protein goal per serving!";
   const GOODTEXT = "You hit your protein goal!";
-  useEffect(() => {
-    const fetchData = async () => {
-      setData(await listFn());
-    };
-    fetchData().catch(console.error);
-  }, [listFn, data]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setData(await listFn());
+  //   };
+  //   fetchData().catch(console.error);
+  // }, [listFn, data]);
 
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
+
+  const data = realData;
+  console.log(`real data is `);
+  console.log(data);
 
 
   if (data.list.length === 0) return <></>;
@@ -143,6 +247,7 @@ function Overview({ listFn, type }: calcProp) {
 type calcProp = {
   listFn: Function;
   type: any;
+  realData: any;
 };
 
 type dataProp = {
@@ -334,7 +439,6 @@ function InfoForm() {
               let newFormData = {...formData};
               newFormData[item] = event.target.value;
               setFormData(newFormData);
-              console.log(formData);
             }}/>
           </div>
         );

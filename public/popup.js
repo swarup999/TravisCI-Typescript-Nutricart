@@ -1,10 +1,13 @@
 let globalVar = 12;
 let cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+let globalCart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+var globalItems = [];
 let items = [];
 
 function grabItemsFromHTML(html) {
   console.log("grabbing items from HTML");
-  globalVar = 14;
+  globalVar = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+  // globalCart = {'calories': 1, 'protein': 1,'carbs': 1, 'fat': 1, 'fibre': 1};
   // Create a temporary div to parse the HTML
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
@@ -47,7 +50,6 @@ const requestAPI = async (weight, quantity, name) => {
 
   const query = weight + " " + name;
   quantity = parseInt(quantity)
-  console.log(query);
 
   try {
     const response = await fetch(
@@ -107,7 +109,6 @@ function onPopupOpen(html) {
 
       // itemValue is a promise so we need to wait for it to resolve
       itemValue.then(function(result) {
-          console.log(result);
           cart = sumNutrition(result, cart);
       });
   };
@@ -132,7 +133,7 @@ function onPopupOpen(html) {
   cart = onPopupOpen(result);
 
   // Process the scraped items
-  console.log(cart);
-  console.log(items);
+  globalCart = cart;
+  globalItems = items;
 })();
 
