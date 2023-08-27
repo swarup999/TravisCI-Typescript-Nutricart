@@ -1,14 +1,12 @@
-# <img src="public/logo512.png" title="NutriCart" alt="NutriCart" width="20" height="20"/> NutriCart 
+# <img src="public/logo512.png" title="NutriCart" alt="NutriCart" width="20" height="20"/> NutriCart
 
-It is getting more and more popular for people to eat healthily among the young generations. Mostly due to the social media influence and other factors such as memes and gym cultures.
+In the busy modern lives of young adults, it is not always easy or convenient to maintain a healthy and nutritious diet.
 
-<p align='center'>
-    <img src="https://i.ytimg.com/vi/Ux5cQbO_ybw/maxresdefault.jpg" width=300><br> 
-</p>
 
-However, it is tedious and repetitive to calculate the macronutrient intake for different needs per person every meal. 
+However, it is tedious and repetitive to calculate the macronutrient intake for different needs per person every meal. With the rise of online grocery shopping, we wanted to create a tool that empowers users to make informed nutritional choices effortlessly.
 
-We introduce **NutriCart** - A convenient Chrome extension that acts as a tracker and calculator when you're shopping for your groceries in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront).
+We introduce **NutriCart** -  your online grocery companion. Helping you balance health and convenience in every click, by seamlessly tracking calories, protein, fibre and more!
+(https://www.instacart.ca/store/real-canadian-superstore/storefront).
 
 <p align='center'>
     <img src="pictures/login.png" width=400><br> 
