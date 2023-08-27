@@ -44,7 +44,7 @@ function App() {
   const [proteinData, SetProteinData] = useState<macroData>({
     type: "protein",
     total: 0,
-    expected: 50,
+    expected: 70,
     list: [],
   });
 
