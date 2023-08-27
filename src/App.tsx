@@ -341,7 +341,7 @@ function Calculations({ listFn, type, realData }: calcProp) {
               ? data.list.map((element: any, index: any) => (
                   <div className="detail-element" key={index}>
                     <div className="item-name-icon">
-                      <img src={element.src} />
+                      <div className="img-container"><img src={element.src} /></div>
                       <div className="item-name">
                         <h3>{element.name}</h3>
                         <h4>{element.weight}kg</h4>
