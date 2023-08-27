@@ -91,7 +91,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.protein ? item.protein : 0
           }
         ];
         newFatData.list = [...newFatData.list,
@@ -99,7 +99,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.fat ? item.fat : 0
           }
         ];
         newCarbsData.list = [...newCarbsData.list,
@@ -107,7 +107,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.carbs ? item.carbs : 0
           }
         ];
         newFibreData.list = [...newFibreData.list,
@@ -115,7 +115,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.fibre ? item.fibre : 0
           }
         ];
         newCaloriesData.list = [...newCaloriesData.list,
@@ -123,10 +123,11 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.calories ? item.calories : 0
           }
         ];
       });
+      console.log(`days are ${days}`);
       newProteinData.expected *= days;
       newProteinData.total += globalCart.protein;
       SetProteinData(newProteinData);
@@ -161,21 +162,21 @@ function App() {
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
-              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={params}></Overview>
-              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={params}></Overview>
-              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={params}></Overview>
-              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={params}></Overview>
-              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={params}></Overview>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Overview>
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={params}></Calculations>
-              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={params}></Calculations>
-              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={params}></Calculations>
-              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={params}></Calculations>
-              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={params}></Calculations>
+              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Calculations>
             </div>
           </>
         )}
@@ -282,10 +283,10 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   if (data.list.length === 0) return <></>;
   let severity;
   let text;
-  if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
+  if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05 || data.total > data.expected * param) {
     severity = "mint";
     text = GOODTEXT;
-  } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
+  } else if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.15) {
     severity = "yellow";
     text = MEDTEXT;
   } else {
@@ -313,11 +314,11 @@ function Overview({ listFn, type, realData, param }: calcProp) {
                 ? ""
                 : `
                 You need ${
-                  Math.abs(data.expected - data.total) + (type === "calories" ? "" : "g")
+                  Math.abs(data.expected * param - data.total) + (type === "calories" ? "" : "g")
                 } ${
-                    data.expected > data.total ? "more" : "less"
+                    data.expected * param > data.total ? "more" : "less"
                   } ${type} per meal to hit your goal of ${
-                    data.expected + (type === "calories" ? "" : "g")
+                    data.expected * param + (type === "calories" ? "" : "g")
                   }`}
             </p>
           </>
@@ -364,9 +365,9 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
+    if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05) {
       severity = "mint";
-    } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
+    } else if (Math.abs(data.expected * param- data.total) < data.expected * param * 0.15) {
       severity = "yellow";
     } else {
       console.log(data.total);
@@ -388,7 +389,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
           </a>
           {isCollapsed ? (
             <h2 className="detail-number">
-              {data.total === undefined ? " " : data.total + "g / " + data.expected + "g"}
+              {data.total === undefined ? " " : data.total + "g / " + data.expected * param+ "g"}
             </h2>
           ) : (
             ""
