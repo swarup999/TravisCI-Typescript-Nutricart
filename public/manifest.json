@@ -9,11 +9,10 @@
   "icons": {
   },
   "manifest_version": 3,
-  "background": {
-    "service_worker": "background.js"
-  },
 
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
   ]
 }

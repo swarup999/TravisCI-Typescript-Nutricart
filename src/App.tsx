@@ -5,8 +5,12 @@ import "./App.css";
 import "normalize.css";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
+import onPopupOpen from "./webscrap";
+import { on } from "events";
 
 function App() {
+  onPopupOpen();
+  
   const [name, setName] = useState("");
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
