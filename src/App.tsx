@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
 import logo from "./assets/logo-wide.svg";
+import cog from "./assets/cog.svg";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
@@ -217,7 +218,7 @@ function Header(props: any) {
               props.updateName();
             }}
           >
-            <img src="https://placehold.co/60" alt="" />
+            <img src={cog} alt="" />
           </a>
         </div>
       </div>
