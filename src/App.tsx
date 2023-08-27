@@ -263,8 +263,8 @@ const calculateNutrition = ({gender, weight, height, age, calories, protein, car
 
 function Overview({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
-  const BADTEXT = `Does not hit your ${type} goal per serving!`;
-  const MEDTEXT = `Almost at your ${type} goal per serving!`;
+  const BADTEXT = `Does not hit your ${type} goal per day!`;
+  const MEDTEXT = `Almost at your ${type} goal per day!`;
   const GOODTEXT = `You hit your ${type} goal!`;
   // useEffect(() => {
   //   const fetchData = async () => {
