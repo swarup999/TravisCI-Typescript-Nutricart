@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
+import logo from "./assets/logo-wide.svg"
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
@@ -184,8 +185,8 @@ function Header(props: any) {
       <div className="header">
         <div className="header-text">
           <div className="logo">
-            {/* <img src="https://placehold.co/300x60" /> */}
-            <h1>nutricart</h1>
+            <img style={{margin: "10px 0px", width: "150px"}}src={logo} />
+            {/* <h1>nutricart</h1> */}
           </div>
           {props.name && (
             <div className="subheader">
@@ -226,8 +227,8 @@ function Overview({ listFn, type, realData }: calcProp) {
 
 
   if (data.list.length === 0) return <></>;
-  let severity;
-  let text;
+  let severity = "";
+  let text = "";
   if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
     severity = "mint";
     text = GOODTEXT;
@@ -405,10 +406,11 @@ function InfoFormCSSTEST() {
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder={'Name'}
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -588,10 +590,11 @@ function InfoForm() {
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder="Your name"
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
