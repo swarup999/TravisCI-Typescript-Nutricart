@@ -1,7 +1,9 @@
 let globalVar = 12;
+let cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+let items = [];
+
 function grabItemsFromHTML(html) {
   console.log("grabbing items from HTML");
-  var items = [];
   globalVar = 14;
   // Create a temporary div to parse the HTML
   const tempDiv = document.createElement("div");
@@ -94,9 +96,9 @@ function onPopupOpen(html) {
   // API call
 
   // Imagine if we use an object like this to store the user's current cart data
-  var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+  // var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
 
-  let items = grabItemsFromHTML(html);
+  items = grabItemsFromHTML(html);
   // line below is just for testing
   //let items = [{'name': 'apple', 'weight': '100g', 'quantity': '1'}, {'name': 'banana', 'weight': '100g', 'quantity': '1'}, {'name': 'orange', 'weight': '100g', 'quantity': '1'}]
   
@@ -110,7 +112,6 @@ function onPopupOpen(html) {
       });
   };
 
-  console.log(cart);
   return cart;
 }
 
@@ -128,9 +129,10 @@ function onPopupOpen(html) {
   }
 
   // Call the grabItemsFromHTML function with the obtained HTML
-  const items = onPopupOpen(result);
+  cart = onPopupOpen(result);
 
   // Process the scraped items
+  console.log(cart);
   console.log(items);
 })();
 
