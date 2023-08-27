@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
-import logo from "./assets/logo-wide.svg"
+import logo from "./assets/logo-wide.svg";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
@@ -12,7 +12,7 @@ type foodItem = {
   weight: number;
   src: string;
   total: number;
-}
+};
 
 type macroData = {
   type: string;
@@ -25,7 +25,7 @@ function App() {
   //onPopupOpen();
   const [name, setName] = useState("");
   useEffect(() => {
-    chrome.storage.sync.get(['Name'], (result) => {
+    chrome.storage.sync.get(["Name"], (result) => {
       setName(result.Name);
     });
   });
@@ -70,80 +70,86 @@ function App() {
 
   useEffect(() => {
     const key = setInterval(() => {
-      if(globalCart.protein) {
+      if (globalCart.protein) {
         clearInterval(key);
-        let newProteinData = {...proteinData};
-        let newFatData = {...fatData};
-        let newFibreData = {...fibreData};
-        let newCaloriesData = {...caloriesData};
-        let newCarbsData = {...carbsData};
-  
+        let newProteinData = { ...proteinData };
+        let newFatData = { ...fatData };
+        let newFibreData = { ...fibreData };
+        let newCaloriesData = { ...caloriesData };
+        let newCarbsData = { ...carbsData };
+
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
-        newProteinData.list = [...newProteinData.list, 
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.quantity
-          }
-        ];
-        newFatData.list = [...newFatData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.quantity
-          }
-        ];
-        newCarbsData.list = [...newCarbsData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.quantity
-          }
-        ];
-        newFibreData.list = [...newFibreData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.quantity
-          }
-        ];
-        newCaloriesData.list = [...newCaloriesData.list,
-          {
-            name: item.name,
-            src: item.src,
-            weight: item.weight,
-            total: item.quantity
-          }
-        ];
-      });
-      newProteinData.total += globalCart.protein;
-      SetProteinData(newProteinData);
-      newFatData.total += globalCart.fat;
-      SetFatData(newFatData);
-      newFibreData.total += globalCart.fibre;
-      SetFibreData(newFibreData);
-      newCarbsData.total += globalCart.carbs;
-      SetCarbsData(newCarbsData);
-      newCaloriesData.total += globalCart.calories;
-      SetCaloriesData(newCaloriesData);
-    }
+          newProteinData.list = [
+            ...newProteinData.list,
+            {
+              name: item.name,
+              src: item.src,
+              weight: item.weight,
+              total: item.quantity,
+            },
+          ];
+          newFatData.list = [
+            ...newFatData.list,
+            {
+              name: item.name,
+              src: item.src,
+              weight: item.weight,
+              total: item.quantity,
+            },
+          ];
+          newCarbsData.list = [
+            ...newCarbsData.list,
+            {
+              name: item.name,
+              src: item.src,
+              weight: item.weight,
+              total: item.quantity,
+            },
+          ];
+          newFibreData.list = [
+            ...newFibreData.list,
+            {
+              name: item.name,
+              src: item.src,
+              weight: item.weight,
+              total: item.quantity,
+            },
+          ];
+          newCaloriesData.list = [
+            ...newCaloriesData.list,
+            {
+              name: item.name,
+              src: item.src,
+              weight: item.weight,
+              total: item.quantity,
+            },
+          ];
+        });
+        newProteinData.total += globalCart.protein;
+        SetProteinData(newProteinData);
+        newFatData.total += globalCart.fat;
+        SetFatData(newFatData);
+        newFibreData.total += globalCart.fibre;
+        SetFibreData(newFibreData);
+        newCarbsData.total += globalCart.carbs;
+        SetCarbsData(newCarbsData);
+        newCaloriesData.total += globalCart.calories;
+        SetCaloriesData(newCaloriesData);
+      }
     }, 1000);
     return () => {
       clearInterval(key);
-    }
+    };
   }, []);
 
   return (
     <div className="extension-container">
       <Header name={name} updateName={updateName}></Header>
       <div className="non-header">
-        {
-          !name ? <InfoForm /> :
+        {!name ? (
+          <InfoForm />
+        ) : (
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
@@ -157,14 +163,22 @@ function App() {
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              <Calculations listFn={getProteins} type={"Calories"} realData={caloriesData}></Calculations>
-              <Calculations listFn={getProteins} type={"Protein"} realData={proteinData}></Calculations>
+              <Calculations
+                listFn={getProteins}
+                type={"Calories"}
+                realData={caloriesData}
+              ></Calculations>
+              <Calculations
+                listFn={getProteins}
+                type={"Protein"}
+                realData={proteinData}
+              ></Calculations>
               <Calculations listFn={getProteins} type={"Carbs"} realData={carbsData}></Calculations>
               <Calculations listFn={getProteins} type={"Fat"} realData={fatData}></Calculations>
               <Calculations listFn={getProteins} type={"Fibre"} realData={fibreData}></Calculations>
             </div>
           </>
-        }
+        )}
         <Footer></Footer>
       </div>
     </div>
@@ -185,7 +199,7 @@ function Header(props: any) {
       <div className="header">
         <div className="header-text">
           <div className="logo">
-            <img style={{margin: "10px 0px", width: "150px"}}src={logo} />
+            <img style={{ margin: "10px 0px", width: "150px" }} src={logo} />
             {/* <h1>nutricart</h1> */}
           </div>
           {props.name && (
@@ -196,10 +210,15 @@ function Header(props: any) {
         </div>
 
         <div className="settings">
-          <a title="Reset User Info" onClick={() => {
-            chrome.storage.sync.set({ ['Name']: ""});
-            props.updateName();
-          }}><img src="https://placehold.co/60" alt="" /></a>
+          <a
+            title="Reset User Info"
+            onClick={() => {
+              chrome.storage.sync.set({ ["Name"]: "" });
+              props.updateName();
+            }}
+          >
+            <img src="https://placehold.co/60" alt="" />
+          </a>
         </div>
       </div>
     </>
@@ -224,7 +243,6 @@ function Overview({ listFn, type, realData }: calcProp) {
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
-
 
   if (data.list.length === 0) return <></>;
   let severity = "";
@@ -256,8 +274,16 @@ function Overview({ listFn, type, realData }: calcProp) {
         ) : (
           <>
             <p>
-              You need {Math.max(0, data.expected - data.total) + "g"} more {type} per meal to hit your goal of{" "}
-              {data.expected + "g"}
+              {severity === "mint"
+                ? ""
+                : `
+                You need ${
+                  Math.abs(data.expected - data.total) + (type === "calories" ? "" : "g")
+                } ${
+                    data.expected > data.total ? "more" : "less"
+                  } ${type} per meal to hit your goal of ${
+                    data.expected + (type === "calories" ? "" : "g")
+                  }`}
             </p>
           </>
         )}
@@ -302,7 +328,7 @@ function Calculations({ listFn, type, realData }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
+    if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
       severity = "mint";
     } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
       severity = "yellow";
@@ -341,13 +367,15 @@ function Calculations({ listFn, type, realData }: calcProp) {
               ? data.list.map((element: any, index: any) => (
                   <div className="detail-element" key={index}>
                     <div className="item-name-icon">
-                      <div className="img-container"><img src={element.src} /></div>
+                      <div className="img-container">
+                        <img src={element.src} />
+                      </div>
                       <div className="item-name">
                         <h3>{element.name}</h3>
-                        <h4>{element.weight}kg</h4>
+                        <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}g</h2>
+                    <h2>{element.total}{type === "Calories" ?"": "g"}</h2>
                   </div>
                 ))
               : "Loading..."}
@@ -357,7 +385,7 @@ function Calculations({ listFn, type, realData }: calcProp) {
               <>
                 <div className="divider"></div>
                 <div className="detail-total">
-                  <h2>{data.total}g</h2>
+                  <h2>{data.total}{type === "Calories" ?"": "g"}</h2>
                   <h3>total per serving</h3>
                 </div>
               </>
@@ -410,7 +438,7 @@ function InfoFormCSSTEST() {
               <input
                 id="name-input"
                 type="text"
-                placeholder={'Name'}
+                placeholder={"Name"}
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -535,7 +563,9 @@ function InfoFormCSSTEST() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "
@@ -579,14 +609,14 @@ function InfoForm() {
 
   return (
     <>
-    <form
-      onSubmit={(e) => {
-        Object.keys(formData).forEach((key: any) => {
-          chrome.storage.sync.set({ [key]: formData[key] });
-        });
-      }}
-    >
-      {stage === 0 ? (
+      <form
+        onSubmit={(e) => {
+          Object.keys(formData).forEach((key: any) => {
+            chrome.storage.sync.set({ [key]: formData[key] });
+          });
+        }}
+      >
+        {stage === 0 ? (
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
@@ -719,7 +749,9 @@ function InfoForm() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "
