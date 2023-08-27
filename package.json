@@ -43,6 +43,8 @@
     ]
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.244"
+    "@types/chrome": "^0.0.244",
+    "eslint": "^8.48.0",
+    "eslint-plugin-react": "^7.33.2"
   }
 }
