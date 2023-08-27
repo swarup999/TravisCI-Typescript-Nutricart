@@ -1,46 +1,53 @@
-# Getting Started with Create React App
+# NutriCart <img src="src/assets/logo.svg" title="NutriCart" alt="NutriCart" width="20" height="20"/>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+It is getting more and more popular for people to eat healthy among the young generations. Mostly due to the social media influence and other factors such as memes and gym cultures.
 
-## Available Scripts
+<p align='center'>
+    <img src="https://i.ytimg.com/vi/Ux5cQbO_ybw/maxresdefault.jpg" width=300><br> 
+</p>
 
-In the project directory, you can run:
+However it is tedious and repetitive to calculate the macro nutrient intake for different needs per person every meal. 
 
-### `npm start`
+We introduce **NutriCart** - A convenient chrome extension that act as a tracker and calculator when you are shopping your groceries in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<p align='center'>
+    <img src="" width=300>UI <br> 
+</p>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To use this extension, you can simply setting up your goals in the extension, everytime you checkout it is going to calculate whether this week's grocery is going to fulfill your target.  
 
-### `npm test`
+<p align='center'>
+    
+</p>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<br>
 
-### `npm run build`
+# How to use this extension
+1. Do your regular shopping in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront)
+<br><img src="pictures/instacart.png">
+2. When you click the chekout button, if you see the pop out checkout tab, you can now click the extension button
+<br><img src="pictures/instabutton.png">
+<br><img src="pictures/cart.png">
+<br><img src="pictures/extension.png">
+3. If this is your first time using it, you will need to set up your user information to calculate your macro nutrient need 
+<br><img src="kjh">
+4. Now you should be able to see all the items in the cart and the total macro nutrients of this times' purchase
+<br><img src="kjh">
+5. You will also see tabs that displays how much you need to add or reduce to reach your goal
+<br><img src="kjh">
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<br>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# How to run this project (for developers)
+1. Install the dependncies, make sure node.js and npm is installed
+```
+npm install 
+```
+2. Run the project
+```
+npm run build
+```
+3. Now go to open your chrome browser and type `chrome://extensions/` in your search bar and turn on the developer mode
+4. Click on `Load unpacked` button and select the `build` folder in the project directory
+5. Now you should see the extension in your chrome browser
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

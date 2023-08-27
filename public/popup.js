@@ -1,8 +1,13 @@
 let globalVar = 12;
+let cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+let globalCart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+var globalItems = [];
+let items = [];
+
 function grabItemsFromHTML(html) {
   console.log("grabbing items from HTML");
-  var items = [];
-  globalVar = 14;
+  globalVar = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+  // globalCart = {'calories': 1, 'protein': 1,'carbs': 1, 'fat': 1, 'fibre': 1};
   // Create a temporary div to parse the HTML
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
@@ -45,7 +50,6 @@ const requestAPI = async (weight, quantity, name) => {
 
   const query = weight + " " + name;
   quantity = parseInt(quantity)
-  console.log(query);
 
   try {
     const response = await fetch(
@@ -94,9 +98,9 @@ function onPopupOpen(html) {
   // API call
 
   // Imagine if we use an object like this to store the user's current cart data
-  var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+  // var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
 
-  let items = grabItemsFromHTML(html);
+  items = grabItemsFromHTML(html);
   // line below is just for testing
   //let items = [{'name': 'apple', 'weight': '100g', 'quantity': '1'}, {'name': 'banana', 'weight': '100g', 'quantity': '1'}, {'name': 'orange', 'weight': '100g', 'quantity': '1'}]
   
@@ -105,12 +109,10 @@ function onPopupOpen(html) {
 
       // itemValue is a promise so we need to wait for it to resolve
       itemValue.then(function(result) {
-          console.log(result);
           cart = sumNutrition(result, cart);
       });
   };
 
-  console.log(cart);
   return cart;
 }
 
@@ -128,9 +130,10 @@ function onPopupOpen(html) {
   }
 
   // Call the grabItemsFromHTML function with the obtained HTML
-  const items = onPopupOpen(result);
+  cart = onPopupOpen(result);
 
   // Process the scraped items
-  console.log(items);
+  globalCart = cart;
+  globalItems = items;
 })();
 
