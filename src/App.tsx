@@ -28,7 +28,7 @@ function Header(props: any) {
   // @ts-ignore: Unreachable code error
   useEffect(
     () => {
-      console.log("global shit updated to " + ("globalVar" in window ? window.globalVar : "?"));
+      console.log("global updated to " + ("globalVar" in window ? window.globalVar : "?"));
     },
     // @ts-ignore: Unreachable code error
     [globalVar]
