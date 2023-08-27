@@ -11,7 +11,7 @@ However, it is tedious and repetitive to calculate the macronutrient intake for 
 We introduce **NutriCart** - A convenient Chrome extension that acts as a tracker and calculator when you're shopping for your groceries in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront).
 
 <p align='center'>
-    <img src="" width=300>UI <br> 
+    <img src="pictures/login.png" width=400><br> 
 </p>
 
 To use this extension, you can simply set up your goals in the extension, and every time you checkout it will calculate whether this week's groceries is going to fulfill your target.  
@@ -24,19 +24,24 @@ To use this extension, you can simply set up your goals in the extension, and ev
 
 # How to use this extension
 1. Do your regular shopping in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront)
-<p align='center'><br><img src="pictures/instacart.png" width=500></p>
+<p align='center'><br><img src="pictures/instacart.png" width=400></p>
+
 2. When you click the chekout button, if you see the pop out checkout tab, you can now click the extension button
 <p align='center'>
-<br><img src="pictures/instabutton.png", width=500>
-<br><img src="pictures/cart.png", width=500>
-<br><img src="pictures/extension.png", width=500>
+<br><img src="pictures/instabutton.png", width=400>
+<br><img src="pictures/cart.png", width=400>
+<br><img src="pictures/extension.png", width=400>
 </p><br>
+
 3. If this is your first time using it, you will need to set up your user information to calculate your macro nutrient need 
-<br><img src="kjh">
+<p align='center'><br><img src="pictures/open.png" width=400></p>
+
 4. Now you should be able to see all the items in the cart and the total macro nutrients of this times' purchase
-<br><img src="kjh"><br>
+<p align='center'><br><img src="pictures/calculator.png" width=400></p>
+<p align='center'><img src="pictures/front.png" width=400></p>
+
 5. You will also see tabs that displays how much you need to add or reduce to reach your goal
-<br><img src="kjh"><br>
+<p align='center'><br><img src="pictures/goals.png" width=400></p>
 
 <br>
 
