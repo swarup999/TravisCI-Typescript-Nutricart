@@ -3,7 +3,7 @@
 In the busy modern lives of young adults, it is not always easy or convenient to maintain a healthy and nutritious diet.
 
 
-However, it is tedious and repetitive to calculate the macronutrient intake for different needs per person every meal. With the rise of online grocery shopping, we wanted to create a tool that empowers users to make informed nutritional choices effortlessly.
+With the rise of online grocery shopping, we wanted to create a tool that empowers users to make informed nutritional choices effortlessly.
 
 We introduce **NutriCart** -  your online grocery companion. Helping you balance health and convenience in every click, by seamlessly tracking calories, protein, fibre and more!
 (https://www.instacart.ca/store/real-canadian-superstore/storefront).
