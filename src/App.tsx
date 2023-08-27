@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
+import logo from "./assets/logo-wide.svg";
+import cog from "./assets/cog.svg";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
@@ -11,7 +13,7 @@ type foodItem = {
   weight: number;
   src: string;
   total: number;
-}
+};
 
 type macroData = {
   type: string;
@@ -25,7 +27,7 @@ function App() {
   const [name, setName] = useState("");
   const [days, setDays] = useState(1);
   useEffect(() => {
-    chrome.storage.sync.get(['Name'], (result) => {
+    chrome.storage.sync.get(["Name"], (result) => {
       setName(result.Name);
     });
     chrome.storage.sync.get(['Days'], (result) => {
@@ -74,14 +76,14 @@ function App() {
 
   useEffect(() => {
     const key = setInterval(() => {
-      if(globalCart.protein) {
+      if (globalCart.protein) {
         clearInterval(key);
-        let newProteinData = {...proteinData};
-        let newFatData = {...fatData};
-        let newFibreData = {...fibreData};
-        let newCaloriesData = {...caloriesData};
-        let newCarbsData = {...carbsData};
-  
+        let newProteinData = { ...proteinData };
+        let newFatData = { ...fatData };
+        let newFibreData = { ...fibreData };
+        let newCaloriesData = { ...caloriesData };
+        let newCarbsData = { ...carbsData };
+
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
         newProteinData.list = [...newProteinData.list, 
@@ -144,7 +146,7 @@ function App() {
     }, 1000);
     return () => {
       clearInterval(key);
-    }
+    };
   }, []);
 
   let params = {};
@@ -153,8 +155,9 @@ function App() {
     <div className="extension-container">
       <Header name={name} updateName={updateName}></Header>
       <div className="non-header">
-        {
-          !name ? <InfoForm /> :
+        {!name ? (
+          <InfoForm />
+        ) : (
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
@@ -175,7 +178,7 @@ function App() {
               <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={params}></Calculations>
             </div>
           </>
-        }
+        )}
         <Footer></Footer>
       </div>
     </div>
@@ -196,8 +199,8 @@ function Header(props: any) {
       <div className="header">
         <div className="header-text">
           <div className="logo">
-            {/* <img src="https://placehold.co/300x60" /> */}
-            <h1>nutricart</h1>
+            <img style={{ margin: "10px 0px", width: "150px" }} src={logo} />
+            {/* <h1>nutricart</h1> */}
           </div>
           {props.name && (
             <div className="subheader">
@@ -207,10 +210,15 @@ function Header(props: any) {
         </div>
 
         <div className="settings">
-          <a title="Reset User Info" onClick={() => {
-            chrome.storage.sync.set({ ['Name']: ""});
-            props.updateName();
-          }}><img src="https://placehold.co/60" alt="" /></a>
+          <a
+            title="Reset User Info"
+            onClick={() => {
+              chrome.storage.sync.set({ ["Name"]: "" });
+              props.updateName();
+            }}
+          >
+            <img src={cog} alt="" />
+          </a>
         </div>
       </div>
     </>
@@ -271,7 +279,6 @@ function Overview({ listFn, type, realData, param }: calcProp) {
     setCollapsed(!isCollapsed);
   }
 
-
   if (data.list.length === 0) return <></>;
   let severity;
   let text;
@@ -302,8 +309,16 @@ function Overview({ listFn, type, realData, param }: calcProp) {
         ) : (
           <>
             <p>
-              You need {Math.max(0, data.expected - data.total) + "g"} more {type} per meal to hit your goal of{" "}
-              {data.expected + "g"}
+              {severity === "mint"
+                ? ""
+                : `
+                You need ${
+                  Math.abs(data.expected - data.total) + (type === "calories" ? "" : "g")
+                } ${
+                    data.expected > data.total ? "more" : "less"
+                  } ${type} per meal to hit your goal of ${
+                    data.expected + (type === "calories" ? "" : "g")
+                  }`}
             </p>
           </>
         )}
@@ -349,7 +364,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
+    if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
       severity = "mint";
     } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
       severity = "yellow";
@@ -388,13 +403,15 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
               ? data.list.map((element: any, index: any) => (
                   <div className="detail-element" key={index}>
                     <div className="item-name-icon">
-                      <img src={element.src} />
+                      <div className="img-container">
+                        <img src={element.src} />
+                      </div>
                       <div className="item-name">
                         <h3>{element.name}</h3>
-                        <h4>{element.weight}kg</h4>
+                        <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}g</h2>
+                    <h2>{element.total}{type === "Calories" ?"": "g"}</h2>
                   </div>
                 ))
               : "Loading..."}
@@ -404,7 +421,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
               <>
                 <div className="divider"></div>
                 <div className="detail-total">
-                  <h2>{data.total}g</h2>
+                  <h2>{data.total}{type === "Calories" ?"": "g"}</h2>
                   <h3>total per serving</h3>
                 </div>
               </>
@@ -453,10 +470,11 @@ function InfoFormCSSTEST() {
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder={"Name"}
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -581,7 +599,9 @@ function InfoFormCSSTEST() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "
@@ -625,21 +645,22 @@ function InfoForm() {
 
   return (
     <>
-    <form
-      onSubmit={(e) => {
-        Object.keys(formData).forEach((key: any) => {
-          chrome.storage.sync.set({ [key]: formData[key] });
-        });
-      }}
-    >
-      {stage === 0 ? (
+      <form
+        onSubmit={(e) => {
+          Object.keys(formData).forEach((key: any) => {
+            chrome.storage.sync.set({ [key]: formData[key] });
+          });
+        }}
+      >
+        {stage === 0 ? (
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder="Your name"
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -764,7 +785,9 @@ function InfoForm() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "
