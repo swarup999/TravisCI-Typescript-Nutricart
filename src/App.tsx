@@ -287,10 +287,10 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   let severity;
   let text;
 
-  if (Math.abs(data.expected - dailyTotal) < data.expected * 0.15) {
+  if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
     text = GOODTEXT;
     severity = "mint";
-  } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
+  } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.45) {
     severity = "yellow";
     text = MEDTEXT;
   } else {
@@ -368,9 +368,9 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - dailyTotal) < data.expected * 0.15) {
+    if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
       severity = "mint";
-    } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
+    } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.45) {
       severity = "yellow";
     } else {
       console.log(dailyTotal);
