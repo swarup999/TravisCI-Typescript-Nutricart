@@ -8,7 +8,7 @@ import { on } from "events";
 
 function App() {
   //onPopupOpen();
-  console.log(globalVar);
+  console.log("globalVar" in window ? window.globalVar : " global var no t detected");
   const [name, setName] = useState("");
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
@@ -53,7 +53,14 @@ function App() {
 }
 
 function Header(props: any) {
-
+  // @ts-ignore: Unreachable code error
+  useEffect(
+    () => {
+      console.log("global shit updated to " + ("globalVar" in window ? window.globalVar : "?"));
+    },
+    // @ts-ignore: Unreachable code error
+    [globalVar]
+  );
   return (
     <>
       <div className="header">
@@ -62,19 +69,24 @@ function Header(props: any) {
             {/* <img src="https://placehold.co/300x60" /> */}
             <h1>nutricart</h1>
           </div>
-          {props.name &&
-          <div className="subheader">
-            <h3>{`Welcome back, ${props.name}!`}</h3>
-          </div> 
-          }
+          {props.name && (
+            <div className="subheader">
+              <h3>{`Welcome back, ${props.name}!`}</h3>
+            </div>
+          )}
         </div>
 
         <div className="settings">
-          <a title="Reset User Info" onClick={() => {
-            chrome.storage.sync.set({ ['Name']: ""});
-            props.updateName();
-            console.log('clicked button');
-          }}><img src="https://placehold.co/60" alt="" /></a>
+          <a
+            title="Reset User Info"
+            onClick={() => {
+              chrome.storage.sync.set({ ["Name"]: "" });
+              props.updateName();
+              console.log("clicked button");
+            }}
+          >
+            <img src="https://placehold.co/60" alt="" />
+          </a>
         </div>
       </div>
     </>
@@ -97,7 +109,6 @@ function Overview({ listFn, type }: calcProp) {
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
-
 
   if (data.list.length === 0) return <></>;
   let severity;
@@ -193,7 +204,9 @@ function Calculations({ listFn, type }: calcProp) {
             <h2>{type}</h2>
           </a>
           {isCollapsed ? (
-            <h2 className="detail-number">{data.total === undefined ? " " : data.total + "g / " + data.expected + 'g'}</h2>
+            <h2 className="detail-number">
+              {data.total === undefined ? " " : data.total + "g / " + data.expected + "g"}
+            </h2>
           ) : (
             ""
           )}
@@ -253,15 +266,180 @@ declare namespace chrome.storage {
 
   const sync: StorageArea;
 }
+function InfoFormCSSTEST() {
+  const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age", "Days"];
+
+  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre", "Sodium"];
+
+  interface FormData {
+    [key: string]: string;
+  }
+
+  const [formData, setFormData] = useState<FormData>({});
+  const [stage, setStage] = useState<any>(0);
+  console.log(formData);
+  return (
+    <>
+      <form className="form-container">
+        {stage === 0 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
+            <div id="name-container" key="Name">
+              <label>How shall we address you?</label>
+              <input
+                id="name-input"
+                type="text"
+                required={true}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Name"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 1 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Just a little more...</h2>
+            <div className="form-element-1">
+              <div className="gender-container" key="Gender">
+                <label>Gender:</label>
+                <select
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Gender"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div key="Weight">
+                <label>Weight (kg):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Weight"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Height">
+                <label>Height (cm):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Height"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Age">
+                <label>Age:</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={200}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Age"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+            </div>
+          </>
+        ) : (
+          " "
+        )}
+        {stage === 2 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>You can leave these blank if you'd like.</h2>
+            <div className="form-element-2">
+              {advancedInfo.map((item: string) => {
+                return (
+                  <div key={item}>
+                    <label>{`Target ${item} (Optional):`}</label>
+                    <input
+                      id={item}
+                      type="number"
+                      required={false}
+                      min={1}
+                      max={10000}
+                      onChange={(event) => {
+                        let newFormData = { ...formData };
+                        newFormData[item] = event.target.value;
+                        setFormData(newFormData);
+                        console.log(formData);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 3 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>One more question...</h2>
+            <div className="form-element-3" key="Frequency">
+              <label>I shop once every </label>
+              <input
+                type="number"
+                required={true}
+                min={1}
+                max={1000}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Days"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+              <label> days.</label>
+            </div>
+            <button className="init-button" type="submit">Submit</button>
+          </>
+        ) : (
+          " "
+        )}
+      </form>
+      {stage !== 3 ? (
+        <button
+          onClick={() => document.querySelector("form")?.reportValidity() && setStage(stage + 1)}
+          className="init-button"
+        >
+          Next
+        </button>
+      ) : (
+        ""
+      )}
+    </>
+  );
+}
 
 function InfoForm() {
-
-  chrome.storage.sync.set({name: "x"}, function() {
+  chrome.storage.sync.set({ name: "x" }, function () {
     console.log("Data saved");
   });
 
   useEffect(() => {
-    chrome.storage.sync.get(['name'], (result) => {
+    chrome.storage.sync.get(["name"], (result) => {
       console.log(result);
     });
   }, []);
@@ -275,81 +453,166 @@ function InfoForm() {
   }
 
   const [formData, setFormData] = useState<FormData>({});
+  const [stage, setStage] = useState<any>(0);
 
   return (
-    <form onSubmit={(e) => {
-      Object.keys(formData).forEach((key: any) => {
-        chrome.storage.sync.set({ [key]: formData[key]});
-      });
-    }}>
-      <div key="Name">
-        <label>Name:</label>
-        <input type="text" required={true} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Name"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Gender">
-        <label>Gender:</label>
-        <select onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Gender"] = e.target.value;
-          setFormData(newFormData);
-        }}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select>
-      </div>
-      <div key="Weight">
-        <label>Weight (kg):</label>
-        <input type="number" required={true} min={1} max={300} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Weight"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Height">
-        <label>Height (cm):</label>
-        <input type="number" required={true} min={1} max={300} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Height"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Age">
-        <label>Age:</label>
-        <input type="number" required={true} min={1} max={200} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Age"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      {advancedInfo.map((item: string) => {
-        return (
-          <div key={item}>
-            <label>{`Target ${item} (Optional):`}</label>
-            <input id={item} type="number" required={false} min={1} max={10000} onChange={(event) => {
-              let newFormData = {...formData};
-              newFormData[item] = event.target.value;
-              setFormData(newFormData);
-              console.log(formData);
-            }}/>
-          </div>
-        );
-      })}
-      <div key="Frequency">
-        <label>I shop once every </label>
-        <input type="number" required={true} min={1} max={1000} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Days"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-        <label> days.</label>
-      </div>
-      <button type="submit">OK</button>
-    </form>
+    <>
+    <form
+      onSubmit={(e) => {
+        Object.keys(formData).forEach((key: any) => {
+          chrome.storage.sync.set({ [key]: formData[key] });
+        });
+      }}
+    >
+      {stage === 0 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
+            <div id="name-container" key="Name">
+              <label>How shall we address you?</label>
+              <input
+                id="name-input"
+                type="text"
+                required={true}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Name"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 1 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Just a little more...</h2>
+            <div className="form-element-1">
+              <div className="gender-container" key="Gender">
+                <label>Gender:</label>
+                <select
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Gender"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div key="Weight">
+                <label>Weight (kg):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Weight"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Height">
+                <label>Height (cm):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Height"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Age">
+                <label>Age:</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={200}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Age"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+            </div>
+          </>
+        ) : (
+          " "
+        )}
+        {stage === 2 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>You can leave these blank if you'd like.</h2>
+            <div className="form-element-2">
+              {advancedInfo.map((item: string) => {
+                return (
+                  <div key={item}>
+                    <label>{`Target ${item} (Optional):`}</label>
+                    <input
+                      id={item}
+                      type="number"
+                      required={false}
+                      min={1}
+                      max={10000}
+                      onChange={(event) => {
+                        let newFormData = { ...formData };
+                        newFormData[item] = event.target.value;
+                        setFormData(newFormData);
+                        console.log(formData);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 3 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>One more question...</h2>
+            <div className="form-element-3" key="Frequency">
+              <label>I shop once every </label>
+              <input
+                type="number"
+                required={true}
+                min={1}
+                max={1000}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Days"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+              <label> days.</label>
+            </div>
+            <button className="init-button" type="submit">Submit</button>
+          </>
+        ) : (
+          " "
+        )}
+      </form>
+      {stage !== 3 ? (
+        <button
+          onClick={() => document.querySelector("form")?.reportValidity() && setStage(stage + 1)}
+          className="init-button"
+        >
+          Next
+        </button>
+      ) : (
+        ""
+      )}
+    </>
   );
 }
 
