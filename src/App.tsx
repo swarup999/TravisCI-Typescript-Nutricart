@@ -46,13 +46,37 @@ function App() {
     list: [],
   });
 
+  const [carbsData, SetCarbsData] = useState<macroData>({
+    type: "carbs",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  const [fibreData, SetFibreData] = useState<macroData>({
+    type: "fibre",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  const [caloriesData, SetCaloriesData] = useState<macroData>({
+    type: "calories",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
   useEffect(() => {
     const key = setInterval(() => {
       if(globalCart.protein) {
-        console.log(globalCart.protein);
         clearInterval(key);
         let newProteinData = {...proteinData};
         let newFatData = {...fatData};
+        let newFibreData = {...fibreData};
+        let newCaloriesData = {...caloriesData};
+        let newCarbsData = {...carbsData};
+  
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
         newProteinData.list = [...newProteinData.list, 
@@ -71,57 +95,47 @@ function App() {
             total: item.quantity
           }
         ];
+        newCarbsData.list = [...newCarbsData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newFibreData.list = [...newFibreData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newCaloriesData.list = [...newCaloriesData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
       });
       newProteinData.total += globalCart.protein;
-      console.log(newProteinData);
       SetProteinData(newProteinData);
-      console.log(proteinData);
-
       newFatData.total += globalCart.fat;
-      console.log(newFatData);
       SetFatData(newFatData);
-      console.log(fatData);
+      newFibreData.total += globalCart.fibre;
+      SetFibreData(newFibreData);
+      newCarbsData.total += globalCart.carbs;
+      SetCarbsData(newCarbsData);
+      newCaloriesData.total += globalCart.calories;
+      SetCaloriesData(newCaloriesData);
     }
     }, 1000);
     return () => {
       clearInterval(key);
     }
   }, []);
-  
-
-
-  // useEffect(() => {
-  //   console.log('in globalCart use effect');
-  //   // @ts-ignore: Unreachable code error
-  //   console.log(JSON.stringify(window.globalCart));
-  //   // @ts-ignore: Unreachable code error
-  //   console.log(window.globalCart.protein);
-  //   let newProteinData = {...proteinData};
-  //   // @ts-ignore: Unreachable code error
-  //   newProteinData.total += window.globalCart.protein;
-  //   SetProteinData(newProteinData);
-  //   console.log(proteinData);
-  //   console.log(newProteinData);
-  //   // @ts-ignore: Unreachable code error
-  // }, [window.globalCart]);
-
-  // useEffect(() => {
-  //   console.log('in globalItems use effect');
-  //   let newProteinData = {...proteinData};
-  //   // @ts-ignore: Unreachable code error
-  //   globalItems.forEach((item: any) => {
-  //     newProteinData.list = [...newProteinData.list, 
-  //       {
-  //         name: item.name,
-  //         src: item.src,
-  //         weight: item.weight,
-  //         total: item.quantity
-  //       }
-  //     ];
-  //   });
-  //   SetProteinData(newProteinData);
-  //   // @ts-ignore: Unreachable code error
-  // }, [globalItems]);
 
   return (
     <div className="extension-container">
@@ -132,18 +146,21 @@ function App() {
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData}></Overview>
               <Overview listFn={getProteins} type={"protein"} realData={proteinData}></Overview>
-              {/* <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview> */}
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData}></Overview>
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              {/* <Calculations listFn={getProteins} type={"Protein"}></Calculations>
-              <Calculations listFn={getProteins} type={"Sodium"}></Calculations>
-              <Calculations listFn={getProteins} type={"Calories"}></Calculations> */}
+              <Calculations listFn={getProteins} type={"Calories"} realData={caloriesData}></Calculations>
+              <Calculations listFn={getProteins} type={"Protein"} realData={proteinData}></Calculations>
+              <Calculations listFn={getProteins} type={"Carbs"} realData={carbsData}></Calculations>
+              <Calculations listFn={getProteins} type={"Fat"} realData={fatData}></Calculations>
+              <Calculations listFn={getProteins} type={"Fibre"} realData={fibreData}></Calculations>
             </div>
           </>
         }
@@ -183,10 +200,12 @@ function Header(props: any) {
 
 function Overview({ listFn, type, realData }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
-  // const [data, setData] = useState<dataProp>(emptyObject);
-  const BADTEXT = "Does not hit your protein goal per serving!";
-  const MEDTEXT = "Almost at your protein goal per serving!";
-  const GOODTEXT = "You hit your protein goal!";
+  const data = realData;
+  console.log(`real data is `);
+  console.log(data);
+  const BADTEXT = `Does not hit your ${type} goal per serving!`;
+  const MEDTEXT = `Almost at your ${type} goal per serving!`;
+  const GOODTEXT = `You hit your ${type} goal!`;
   // useEffect(() => {
   //   const fetchData = async () => {
   //     setData(await listFn());
@@ -197,10 +216,6 @@ function Overview({ listFn, type, realData }: calcProp) {
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
-
-  const data = realData;
-  console.log(`real data is `);
-  console.log(data);
 
 
   if (data.list.length === 0) return <></>;
@@ -233,7 +248,7 @@ function Overview({ listFn, type, realData }: calcProp) {
         ) : (
           <>
             <p>
-              You need {data.expected - data.total + "g"} more protein per meal to hit your goal of{" "}
+              You need {Math.max(0, data.expected - data.total) + "g"} more {type} per meal to hit your goal of{" "}
               {data.expected + "g"}
             </p>
           </>
@@ -257,17 +272,19 @@ type dataProp = {
   expected: any;
 };
 
-function Calculations({ listFn, type }: calcProp) {
+function Calculations({ listFn, type, realData }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
 
-  const [data, setData] = useState<dataProp>(emptyObject);
+  // const [data, setData] = useState<dataProp>(emptyObject);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setData(await listFn());
-    };
-    fetchData().catch(console.error);
-  }, [listFn, data]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setData(await listFn());
+  //   };
+  //   fetchData().catch(console.error);
+  // }, [listFn, data]);
+
+  const data = realData;
 
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
@@ -277,11 +294,13 @@ function Calculations({ listFn, type }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
+    if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
       severity = "mint";
     } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
       severity = "yellow";
     } else {
+      console.log(data.total);
+      console.log(data.expected);
       severity = "red";
     }
   }
