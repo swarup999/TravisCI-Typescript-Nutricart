@@ -38,6 +38,81 @@ function grabItemsFromHTML(html) {
   return items;
 }
 
+const requestAPI = async (weight, quantity, name) => {
+  // weight should include unit (g, oz, etc)
+  // all parameters are strings
+
+  const query = weight + " " + name;
+  quantity = parseInt(quantity)
+  console.log(query);
+
+  try {
+    const response = await fetch(
+      'https://api.api-ninjas.com/v1/nutrition?query=' + query,
+      {
+        method: 'GET',
+        headers: {
+          'X-Api-Key': 'm8Av39tZ4NwKsuXmjZmnNQ==WdaIx6ioJ0QM7o6d',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.ok) {
+      const result = await response.json();
+      let calories = result[0].calories*quantity;
+      let fat = result[0].fat_total_g*quantity;
+      let protein = result[0].protein_g*quantity;
+      let carbs = result[0].carbohydrates_total_g*quantity;
+      let fibre = result[0].fiber_g*quantity;
+      
+      let nutrition = {'calories': calories, 'fat': fat, 'protein': protein, 'carbs': carbs, 'fibre': fibre};
+
+      return nutrition; // returns object with the food's nutritional facts
+
+    } else {
+      console.error('Error: ', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error: ', error);
+  }
+};
+
+const sumNutrition = (item, cart) => {
+  cart['calories'] += item['calories'];
+  cart['fat'] += item['fat'];
+  cart['protein'] += item['protein'];
+  cart['carbs'] += item['carbs'];
+  cart['fibre'] += item['fibre'];
+
+  return cart;
+};
+
+// PopupOpen 
+function onPopupOpen(html) {
+  // Get the items from the web scraping
+  // API call
+
+  // Imagine if we use an object like this to store the user's current cart data
+  var cart = {'calories': 0, 'protein': 0,'carbs': 0, 'fat': 0, 'fibre': 0};
+
+  let items = grabItemsFromHTML(html);
+  // line below is just for testing
+  //let items = [{'name': 'apple', 'weight': '100g', 'quantity': '1'}, {'name': 'banana', 'weight': '100g', 'quantity': '1'}, {'name': 'orange', 'weight': '100g', 'quantity': '1'}]
+  
+  for (let item of items) {
+      let itemValue = requestAPI(item['weight'], item['quantity'], item['name']);
+
+      // itemValue is a promise so we need to wait for it to resolve
+      itemValue.then(function(result) {
+          console.log(result);
+          cart = sumNutrition(result, cart);
+      });
+  };
+
+  console.log(cart);
+  return cart;
+}
+
 (async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   let result;
@@ -52,7 +127,7 @@ function grabItemsFromHTML(html) {
   }
 
   // Call the grabItemsFromHTML function with the obtained HTML
-  const items = grabItemsFromHTML(result);
+  const items = onPopupOpen(result);
 
   // Process the scraped items
   console.log(items);
