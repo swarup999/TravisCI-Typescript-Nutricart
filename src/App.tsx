@@ -4,7 +4,7 @@ import "normalize.css";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
-import { on } from "events";
+//import { on } from "events";
 
 type foodItem = {
   name: string;
@@ -39,15 +39,31 @@ function App() {
     list: [],
   });
 
+  const [fatData, SetFatData] = useState<macroData>({
+    type: "fat",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
   useEffect(() => {
     const key = setInterval(() => {
       if(globalCart.protein) {
         console.log(globalCart.protein);
         clearInterval(key);
         let newProteinData = {...proteinData};
+        let newFatData = {...fatData};
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
         newProteinData.list = [...newProteinData.list, 
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newFatData.list = [...newFatData.list,
           {
             name: item.name,
             src: item.src,
@@ -60,12 +76,19 @@ function App() {
       console.log(newProteinData);
       SetProteinData(newProteinData);
       console.log(proteinData);
+
+      newFatData.total += globalCart.fat;
+      console.log(newFatData);
+      SetFatData(newFatData);
+      console.log(fatData);
     }
     }, 1000);
     return () => {
       clearInterval(key);
     }
   }, []);
+  
+
 
   // useEffect(() => {
   //   console.log('in globalCart use effect');
