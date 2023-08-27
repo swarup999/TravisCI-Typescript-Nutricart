@@ -5,14 +5,27 @@ import "./App.css";
 import "normalize.css";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
+import { getCurrentTab, getCurrentTabUrl } from "./chromeServices/utils";
 
 function App() {
   const [name, setName] = useState("");
+  const [title, setTitle] = useState('');
+  const [headlines, setHeadlines] = useState<string[]>([]);
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
       setName(result.Name);
     });
   });
+
+  useEffect(() => {
+    getCurrentTabUrl((url) => {
+        console.log(`current url is ${url}`);
+    });
+    const curTab = async() => {
+      return await getCurrentTab()
+    };
+    console.log(curTab);
+  }, []);
 
   const updateName = () => {
     setName("");
@@ -240,16 +253,6 @@ function Footer() {
       <h4>© 2023 NutriTechnics</h4>
     </div>
   );
-}
-
-declare namespace chrome.storage {
-  interface StorageArea {
-    get(keys: string | string[] | null, callback: (result: { [key: string]: any }) => void): void;
-
-    set(items: { [key: string]: any }, callback?: () => void): void;
-  }
-
-  const sync: StorageArea;
 }
 
 function InfoForm() {
