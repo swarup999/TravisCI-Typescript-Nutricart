@@ -24,17 +24,19 @@ To use this extension, you can simply setting up your goals in the extension, ev
 
 # How to use this extension
 1. Do your regular shopping in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront)
-<br><img src="pictures/instacart.png">
+<p align='center'><br><img src="pictures/instacart.png" width=500></p>
 2. When you click the chekout button, if you see the pop out checkout tab, you can now click the extension button
-<br><img src="pictures/instabutton.png">
-<br><img src="pictures/cart.png">
-<br><img src="pictures/extension.png">
+<p align='center'>
+<br><img src="pictures/instabutton.png", width=500>
+<br><img src="pictures/cart.png", width=500>
+<br><img src="pictures/extension.png", width=500>
+</p><br>
 3. If this is your first time using it, you will need to set up your user information to calculate your macro nutrient need 
 <br><img src="kjh">
 4. Now you should be able to see all the items in the cart and the total macro nutrients of this times' purchase
-<br><img src="kjh">
+<br><img src="kjh"><br>
 5. You will also see tabs that displays how much you need to add or reduce to reach your goal
-<br><img src="kjh">
+<br><img src="kjh"><br>
 
 <br>
 
