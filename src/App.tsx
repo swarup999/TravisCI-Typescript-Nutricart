@@ -23,9 +23,14 @@ type macroData = {
 function App() {
   //onPopupOpen();
   const [name, setName] = useState("");
+  const [days, setDays] = useState(1);
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {
       setName(result.Name);
+    });
+    chrome.storage.sync.get(['Days'], (result) => {
+      setDays(result.Days);
+      console.log(result.Days);
     });
   });
   const updateName = () => {
@@ -35,35 +40,35 @@ function App() {
   const [proteinData, SetProteinData] = useState<macroData>({
     type: "protein",
     total: 0,
-    expected: 100,
+    expected: 50 * days,
     list: [],
   });
 
   const [fatData, SetFatData] = useState<macroData>({
     type: "fat",
     total: 0,
-    expected: 100,
+    expected: 65 * days,
     list: [],
   });
 
   const [carbsData, SetCarbsData] = useState<macroData>({
     type: "carbs",
     total: 0,
-    expected: 100,
+    expected: 130 * days,
     list: [],
   });
 
   const [fibreData, SetFibreData] = useState<macroData>({
     type: "fibre",
     total: 0,
-    expected: 100,
+    expected: 25 * days,
     list: [],
   });
 
   const [caloriesData, SetCaloriesData] = useState<macroData>({
     type: "calories",
     total: 0,
-    expected: 100,
+    expected: 2250 * days,
     list: [],
   });
 
@@ -120,14 +125,19 @@ function App() {
           }
         ];
       });
+      newProteinData.expected *= days;
       newProteinData.total += globalCart.protein;
       SetProteinData(newProteinData);
+      newFatData.expected *= days;
       newFatData.total += globalCart.fat;
       SetFatData(newFatData);
+      newFibreData.expected *= days;
       newFibreData.total += globalCart.fibre;
       SetFibreData(newFibreData);
+      newCarbsData.expected *= days;
       newCarbsData.total += globalCart.carbs;
       SetCarbsData(newCarbsData);
+      newCaloriesData.expected *= days;
       newCaloriesData.total += globalCart.calories;
       SetCaloriesData(newCaloriesData);
     }
@@ -136,6 +146,8 @@ function App() {
       clearInterval(key);
     }
   }, []);
+
+  let params = {};
 
   return (
     <div className="extension-container">
@@ -146,21 +158,21 @@ function App() {
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
-              <Overview listFn={getProteins} type={"calories"} realData={caloriesData}></Overview>
-              <Overview listFn={getProteins} type={"protein"} realData={proteinData}></Overview>
-              <Overview listFn={getProteins} type={"carbs"} realData={carbsData}></Overview>
-              <Overview listFn={getProteins} type={"fat"} realData={fatData}></Overview>
-              <Overview listFn={getProteins} type={"fibre"} realData={fibreData}></Overview>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={params}></Overview>
+              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={params}></Overview>
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={params}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={params}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={params}></Overview>
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              <Calculations listFn={getProteins} type={"Calories"} realData={caloriesData}></Calculations>
-              <Calculations listFn={getProteins} type={"Protein"} realData={proteinData}></Calculations>
-              <Calculations listFn={getProteins} type={"Carbs"} realData={carbsData}></Calculations>
-              <Calculations listFn={getProteins} type={"Fat"} realData={fatData}></Calculations>
-              <Calculations listFn={getProteins} type={"Fibre"} realData={fibreData}></Calculations>
+              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={params}></Calculations>
+              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={params}></Calculations>
+              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={params}></Calculations>
+              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={params}></Calculations>
+              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={params}></Calculations>
             </div>
           </>
         }
@@ -205,7 +217,40 @@ function Header(props: any) {
   );
 }
 
-function Overview({ listFn, type, realData }: calcProp) {
+const calculateNutrition = ({gender, weight, height, age, calories, protein, carbs, fat, fibre}: any) => {
+  let bmr;
+  // calculate BMR (basal metabolic rate) which is the number of calories burned at rest
+  if (gender == "Male") {
+      let bmr = 13.397 * weight + 4.799 * height - 5.677 * age + 88.362;
+  } else {
+      let bmr = 9.247 * weight + 3.098 * height - 4.33 * age + 447.593;
+  }
+
+  if (calories != null) {  // is user doesnt specifiy calories, we calculate it for them
+      calories = bmr;
+  };
+
+  if (protein != null) {
+      protein = (calories * 0.2)/4; // calculates protein in grams
+  };
+
+  if (fat != null) {   // calculates fat in grams
+      fat = (calories * 0.3)/9;
+  };
+
+  if (carbs != null) {  // calculates carbs in grams
+      carbs = (calories * 0.5)/4;
+  };
+
+  if (fibre != null) {  // calculates fibre in grams
+      fibre = (calories/1000)*14;
+  }
+
+  // returns an object with all the nutrition values that the user should consume
+  return {calories: calories, protein: protein, carbs: carbs, fat: fat, fibre: fibre};
+}
+
+function Overview({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
   const data = realData;
   console.log(`real data is `);
@@ -220,6 +265,8 @@ function Overview({ listFn, type, realData }: calcProp) {
   //   fetchData().catch(console.error);
   // }, [listFn, data]);
 
+
+
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
@@ -228,7 +275,7 @@ function Overview({ listFn, type, realData }: calcProp) {
   if (data.list.length === 0) return <></>;
   let severity;
   let text;
-  if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
+  if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
     severity = "mint";
     text = GOODTEXT;
   } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
@@ -270,6 +317,7 @@ type calcProp = {
   listFn: Function;
   type: any;
   realData: any;
+  param: any;
 };
 
 type dataProp = {
@@ -279,7 +327,7 @@ type dataProp = {
   expected: any;
 };
 
-function Calculations({ listFn, type, realData }: calcProp) {
+function Calculations({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
 
   // const [data, setData] = useState<dataProp>(emptyObject);
@@ -566,7 +614,7 @@ function InfoForm() {
 
   const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age", "Days"];
 
-  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre", "Sodium"];
+  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre"];
 
   interface FormData {
     [key: string]: string;
