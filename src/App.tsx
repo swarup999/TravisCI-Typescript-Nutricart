@@ -46,13 +46,37 @@ function App() {
     list: [],
   });
 
+  const [carbsData, SetCarbsData] = useState<macroData>({
+    type: "carbs",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  const [fibreData, SetFibreData] = useState<macroData>({
+    type: "fibre",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
+  const [caloriesData, SetCaloriesData] = useState<macroData>({
+    type: "calories",
+    total: 0,
+    expected: 100,
+    list: [],
+  });
+
   useEffect(() => {
     const key = setInterval(() => {
       if(globalCart.protein) {
-        console.log(globalCart.protein);
         clearInterval(key);
         let newProteinData = {...proteinData};
         let newFatData = {...fatData};
+        let newFibreData = {...fibreData};
+        let newCaloriesData = {...caloriesData};
+        let newCarbsData = {...carbsData};
+  
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
         newProteinData.list = [...newProteinData.list, 
@@ -71,57 +95,47 @@ function App() {
             total: item.quantity
           }
         ];
+        newCarbsData.list = [...newCarbsData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newFibreData.list = [...newFibreData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
+        newCaloriesData.list = [...newCaloriesData.list,
+          {
+            name: item.name,
+            src: item.src,
+            weight: item.weight,
+            total: item.quantity
+          }
+        ];
       });
       newProteinData.total += globalCart.protein;
-      console.log(newProteinData);
       SetProteinData(newProteinData);
-      console.log(proteinData);
-
       newFatData.total += globalCart.fat;
-      console.log(newFatData);
       SetFatData(newFatData);
-      console.log(fatData);
+      newFibreData.total += globalCart.fibre;
+      SetFibreData(newFibreData);
+      newCarbsData.total += globalCart.carbs;
+      SetCarbsData(newCarbsData);
+      newCaloriesData.total += globalCart.calories;
+      SetCaloriesData(newCaloriesData);
     }
     }, 1000);
     return () => {
       clearInterval(key);
     }
   }, []);
-  
-
-
-  // useEffect(() => {
-  //   console.log('in globalCart use effect');
-  //   // @ts-ignore: Unreachable code error
-  //   console.log(JSON.stringify(window.globalCart));
-  //   // @ts-ignore: Unreachable code error
-  //   console.log(window.globalCart.protein);
-  //   let newProteinData = {...proteinData};
-  //   // @ts-ignore: Unreachable code error
-  //   newProteinData.total += window.globalCart.protein;
-  //   SetProteinData(newProteinData);
-  //   console.log(proteinData);
-  //   console.log(newProteinData);
-  //   // @ts-ignore: Unreachable code error
-  // }, [window.globalCart]);
-
-  // useEffect(() => {
-  //   console.log('in globalItems use effect');
-  //   let newProteinData = {...proteinData};
-  //   // @ts-ignore: Unreachable code error
-  //   globalItems.forEach((item: any) => {
-  //     newProteinData.list = [...newProteinData.list, 
-  //       {
-  //         name: item.name,
-  //         src: item.src,
-  //         weight: item.weight,
-  //         total: item.quantity
-  //       }
-  //     ];
-  //   });
-  //   SetProteinData(newProteinData);
-  //   // @ts-ignore: Unreachable code error
-  // }, [globalItems]);
 
   return (
     <div className="extension-container">
@@ -132,18 +146,21 @@ function App() {
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData}></Overview>
               <Overview listFn={getProteins} type={"protein"} realData={proteinData}></Overview>
-              {/* <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview>
-              <Overview listFn={getProteins} type={"protein"}></Overview> */}
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData}></Overview>
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              {/* <Calculations listFn={getProteins} type={"Protein"}></Calculations>
-              <Calculations listFn={getProteins} type={"Sodium"}></Calculations>
-              <Calculations listFn={getProteins} type={"Calories"}></Calculations> */}
+              <Calculations listFn={getProteins} type={"Calories"} realData={caloriesData}></Calculations>
+              <Calculations listFn={getProteins} type={"Protein"} realData={proteinData}></Calculations>
+              <Calculations listFn={getProteins} type={"Carbs"} realData={carbsData}></Calculations>
+              <Calculations listFn={getProteins} type={"Fat"} realData={fatData}></Calculations>
+              <Calculations listFn={getProteins} type={"Fibre"} realData={fibreData}></Calculations>
             </div>
           </>
         }
@@ -154,7 +171,14 @@ function App() {
 }
 
 function Header(props: any) {
-
+  // @ts-ignore: Unreachable code error
+  useEffect(
+    () => {
+      console.log("global shit updated to " + ("globalVar" in window ? window.globalVar : "?"));
+    },
+    // @ts-ignore: Unreachable code error
+    [globalVar]
+  );
   return (
     <>
       <div className="header">
@@ -163,11 +187,11 @@ function Header(props: any) {
             {/* <img src="https://placehold.co/300x60" /> */}
             <h1>nutricart</h1>
           </div>
-          {props.name &&
-          <div className="subheader">
-            <h3>{`Welcome back, ${props.name}!`}</h3>
-          </div> 
-          }
+          {props.name && (
+            <div className="subheader">
+              <h3>{`Welcome back, ${props.name}!`}</h3>
+            </div>
+          )}
         </div>
 
         <div className="settings">
@@ -183,10 +207,12 @@ function Header(props: any) {
 
 function Overview({ listFn, type, realData }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
-  // const [data, setData] = useState<dataProp>(emptyObject);
-  const BADTEXT = "Does not hit your protein goal per serving!";
-  const MEDTEXT = "Almost at your protein goal per serving!";
-  const GOODTEXT = "You hit your protein goal!";
+  const data = realData;
+  console.log(`real data is `);
+  console.log(data);
+  const BADTEXT = `Does not hit your ${type} goal per serving!`;
+  const MEDTEXT = `Almost at your ${type} goal per serving!`;
+  const GOODTEXT = `You hit your ${type} goal!`;
   // useEffect(() => {
   //   const fetchData = async () => {
   //     setData(await listFn());
@@ -197,10 +223,6 @@ function Overview({ listFn, type, realData }: calcProp) {
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
-
-  const data = realData;
-  console.log(`real data is `);
-  console.log(data);
 
 
   if (data.list.length === 0) return <></>;
@@ -233,7 +255,7 @@ function Overview({ listFn, type, realData }: calcProp) {
         ) : (
           <>
             <p>
-              You need {data.expected - data.total + "g"} more protein per meal to hit your goal of{" "}
+              You need {Math.max(0, data.expected - data.total) + "g"} more {type} per meal to hit your goal of{" "}
               {data.expected + "g"}
             </p>
           </>
@@ -257,17 +279,19 @@ type dataProp = {
   expected: any;
 };
 
-function Calculations({ listFn, type }: calcProp) {
+function Calculations({ listFn, type, realData }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
 
-  const [data, setData] = useState<dataProp>(emptyObject);
+  // const [data, setData] = useState<dataProp>(emptyObject);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setData(await listFn());
-    };
-    fetchData().catch(console.error);
-  }, [listFn, data]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setData(await listFn());
+  //   };
+  //   fetchData().catch(console.error);
+  // }, [listFn, data]);
+
+  const data = realData;
 
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
@@ -277,11 +301,13 @@ function Calculations({ listFn, type }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
+    if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
       severity = "mint";
     } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
       severity = "yellow";
     } else {
+      console.log(data.total);
+      console.log(data.expected);
       severity = "red";
     }
   }
@@ -298,7 +324,9 @@ function Calculations({ listFn, type }: calcProp) {
             <h2>{type}</h2>
           </a>
           {isCollapsed ? (
-            <h2 className="detail-number">{data.total === undefined ? " " : data.total + "g / " + data.expected + 'g'}</h2>
+            <h2 className="detail-number">
+              {data.total === undefined ? " " : data.total + "g / " + data.expected + "g"}
+            </h2>
           ) : (
             ""
           )}
@@ -358,15 +386,180 @@ declare namespace chrome.storage {
 
   const sync: StorageArea;
 }
+function InfoFormCSSTEST() {
+  const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age", "Days"];
+
+  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre", "Sodium"];
+
+  interface FormData {
+    [key: string]: string;
+  }
+
+  const [formData, setFormData] = useState<FormData>({});
+  const [stage, setStage] = useState<any>(0);
+  console.log(formData);
+  return (
+    <>
+      <form className="form-container">
+        {stage === 0 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
+            <div id="name-container" key="Name">
+              <label>How shall we address you?</label>
+              <input
+                id="name-input"
+                type="text"
+                required={true}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Name"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 1 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Just a little more...</h2>
+            <div className="form-element-1">
+              <div className="gender-container" key="Gender">
+                <label>Gender:</label>
+                <select
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Gender"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div key="Weight">
+                <label>Weight (kg):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Weight"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Height">
+                <label>Height (cm):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Height"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Age">
+                <label>Age:</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={200}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Age"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+            </div>
+          </>
+        ) : (
+          " "
+        )}
+        {stage === 2 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>You can leave these blank if you'd like.</h2>
+            <div className="form-element-2">
+              {advancedInfo.map((item: string) => {
+                return (
+                  <div key={item}>
+                    <label>{`Target ${item} (Optional):`}</label>
+                    <input
+                      id={item}
+                      type="number"
+                      required={false}
+                      min={1}
+                      max={10000}
+                      onChange={(event) => {
+                        let newFormData = { ...formData };
+                        newFormData[item] = event.target.value;
+                        setFormData(newFormData);
+                        console.log(formData);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 3 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>One more question...</h2>
+            <div className="form-element-3" key="Frequency">
+              <label>I shop once every </label>
+              <input
+                type="number"
+                required={true}
+                min={1}
+                max={1000}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Days"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+              <label> days.</label>
+            </div>
+            <button className="init-button" type="submit">Submit</button>
+          </>
+        ) : (
+          " "
+        )}
+      </form>
+      {stage !== 3 ? (
+        <button
+          onClick={() => document.querySelector("form")?.reportValidity() && setStage(stage + 1)}
+          className="init-button"
+        >
+          Next
+        </button>
+      ) : (
+        ""
+      )}
+    </>
+  );
+}
 
 function InfoForm() {
-
-  chrome.storage.sync.set({name: "x"}, function() {
+  chrome.storage.sync.set({ name: "x" }, function () {
     console.log("Data saved");
   });
 
   useEffect(() => {
-    chrome.storage.sync.get(['name'], (result) => {
+    chrome.storage.sync.get(["name"], (result) => {
       console.log(result);
     });
   }, []);
@@ -380,80 +573,166 @@ function InfoForm() {
   }
 
   const [formData, setFormData] = useState<FormData>({});
+  const [stage, setStage] = useState<any>(0);
 
   return (
-    <form onSubmit={(e) => {
-      Object.keys(formData).forEach((key: any) => {
-        chrome.storage.sync.set({ [key]: formData[key]});
-      });
-    }}>
-      <div key="Name">
-        <label>Name:</label>
-        <input type="text" required={true} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Name"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Gender">
-        <label>Gender:</label>
-        <select onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Gender"] = e.target.value;
-          setFormData(newFormData);
-        }}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select>
-      </div>
-      <div key="Weight">
-        <label>Weight (kg):</label>
-        <input type="number" required={true} min={1} max={300} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Weight"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Height">
-        <label>Height (cm):</label>
-        <input type="number" required={true} min={1} max={300} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Height"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      <div key="Age">
-        <label>Age:</label>
-        <input type="number" required={true} min={1} max={200} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Age"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-      </div>
-      {advancedInfo.map((item: string) => {
-        return (
-          <div key={item}>
-            <label>{`Target ${item} (Optional):`}</label>
-            <input id={item} type="number" required={false} min={1} max={10000} onChange={(event) => {
-              let newFormData = {...formData};
-              newFormData[item] = event.target.value;
-              setFormData(newFormData);
-            }}/>
-          </div>
-        );
-      })}
-      <div key="Frequency">
-        <label>I shop once every </label>
-        <input type="number" required={true} min={1} max={1000} onChange={(e) => {
-          let newFormData = {...formData};
-          newFormData["Days"] = e.target.value;
-          setFormData(newFormData);
-        }}></input>
-        <label> days.</label>
-      </div>
-      <button type="submit">OK</button>
-    </form>
+    <>
+    <form
+      onSubmit={(e) => {
+        Object.keys(formData).forEach((key: any) => {
+          chrome.storage.sync.set({ [key]: formData[key] });
+        });
+      }}
+    >
+      {stage === 0 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
+            <div id="name-container" key="Name">
+              <label>How shall we address you?</label>
+              <input
+                id="name-input"
+                type="text"
+                required={true}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Name"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 1 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>Just a little more...</h2>
+            <div className="form-element-1">
+              <div className="gender-container" key="Gender">
+                <label>Gender:</label>
+                <select
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Gender"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div key="Weight">
+                <label>Weight (kg):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Weight"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Height">
+                <label>Height (cm):</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={300}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Height"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+              <div key="Age">
+                <label>Age:</label>
+                <input
+                  type="number"
+                  required={true}
+                  min={1}
+                  max={200}
+                  onChange={(e) => {
+                    let newFormData = { ...formData };
+                    newFormData["Age"] = e.target.value;
+                    setFormData(newFormData);
+                  }}
+                ></input>
+              </div>
+            </div>
+          </>
+        ) : (
+          " "
+        )}
+        {stage === 2 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>You can leave these blank if you'd like.</h2>
+            <div className="form-element-2">
+              {advancedInfo.map((item: string) => {
+                return (
+                  <div key={item}>
+                    <label>{`Target ${item} (Optional):`}</label>
+                    <input
+                      id={item}
+                      type="number"
+                      required={false}
+                      min={1}
+                      max={10000}
+                      onChange={(event) => {
+                        let newFormData = { ...formData };
+                        newFormData[item] = event.target.value;
+                        setFormData(newFormData);
+                        console.log(formData);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {stage === 3 ? (
+          <>
+            <h2 style={{ textAlign: "center" }}>One more question...</h2>
+            <div className="form-element-3" key="Frequency">
+              <label>I shop once every </label>
+              <input
+                type="number"
+                required={true}
+                min={1}
+                max={1000}
+                onChange={(e) => {
+                  let newFormData = { ...formData };
+                  newFormData["Days"] = e.target.value;
+                  setFormData(newFormData);
+                }}
+              ></input>
+              <label> days.</label>
+            </div>
+            <button className="init-button" type="submit">Submit</button>
+          </>
+        ) : (
+          " "
+        )}
+      </form>
+      {stage !== 3 ? (
+        <button
+          onClick={() => document.querySelector("form")?.reportValidity() && setStage(stage + 1)}
+          className="init-button"
+        >
+          Next
+        </button>
+      ) : (
+        ""
+      )}
+    </>
   );
 }
 
