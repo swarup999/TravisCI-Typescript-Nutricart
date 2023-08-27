@@ -23,26 +23,137 @@ type macroData = {
 function App() {
   //onPopupOpen();
   const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [weight, setWeight] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [age, setAge] = useState(0);
+  const [days, setDays] = useState(0);
+  const [calories, setCalories] = useState(0);
+  const [protein, setProtein] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [fat, setFat] = useState(0);
+  const [fibre, setFibre] = useState(0);
+  const [results, setResults] = useState(null);
+
+  const calculateNutrition = (
+    gender: string,
+    weight: number,
+    height: number,
+    age: number,
+    calories: number | null,
+    protein: number | null,
+    carbs: number | null,
+    fat: number | null,
+    fibre: number | null,
+    days: number
+  ): {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fibre: number;
+  } => {
+    let bmr: number;
+    
+    // calculate BMR (basal metabolic rate) which is the number of calories burned at rest
+    if (gender === "Male") {
+      bmr = (13.397 * weight + 4.799 * height - 5.677 * age + 88.362) * days;
+    } else {
+      bmr = (9.247 * weight + 3.098 * height - 4.33 * age + 447.593) * days;
+    }
+  
+    if (calories == null) {
+      calories = bmr;
+    }
+  
+    if (protein !== null) {
+      protein = ((calories * 0.2) / 4) * days;
+    }
+  
+    if (fat !== null) {
+      fat = ((calories * 0.3) / 9) * days;
+    }
+  
+    if (carbs !== null) {
+      carbs = ((calories * 0.5) / 4) * days;
+    }
+  
+    if (fibre !== null) {
+      fibre = ((calories / 1000) * 14) * days;
+    }
+  
+    // returns an object with all the nutrition values that the user should consume
+    return {
+      calories: calories!,
+      protein: protein!,
+      carbs: carbs!,
+      fat: fat!,
+      fibre: fibre!,
+    };
+  };
+  
+
   useEffect(() => {
+    console.log("in use effect")
+
     chrome.storage.sync.get(['Name'], (result) => {
       setName(result.Name);
     });
+    chrome.storage.sync.get(['Gender'], (result) => {
+      setGender(result.Gender)
+    });
+    chrome.storage.sync.get(['Weight'], (result) => { 
+      setWeight(result.Weight);
+    });
+    chrome.storage.sync.get(['Height'], (result) => {
+      setHeight(result.Height);
+    });
+    chrome.storage.sync.get(['Age'], (result) => {
+      setAge(result.Age);
+    });
+    chrome.storage.sync.get(['Days'], (result) => {
+      setDays(result.Days);
+    });
+    chrome.storage.sync.get(['Calories'], (result) => {
+      setCalories(result.Calories);
+    });
+    chrome.storage.sync.get(['Protein'], (result) => {
+      setProtein(result.Protein);
+    });
+    chrome.storage.sync.get(['Carbs'], (result) => {
+      setCarbs(result.Carbs);
+    });
+    chrome.storage.sync.get(['Fat'], (result) => {  
+      setFat(result.Fat);
+    });
+    chrome.storage.sync.get(['Fibre'], (result) => {
+      setFibre(result.Fibre);
+    });
+    
+    console.log(calculateNutrition(gender, weight, height, age, calories, protein, carbs, fat, fibre, days));
+    // @ts-ignore: Unreachable code error
+    setResults(calculateNutrition(gender, weight, height, age, calories, protein, carbs, fat, fibre, days));
   });
+
   const updateName = () => {
     setName("");
   };
 
+console.log(results);
+
   const [proteinData, SetProteinData] = useState<macroData>({
     type: "protein",
     total: 0,
-    expected: 100,
+    // @ts-ignore: Unreachable code error
+    expected: results.protein,
     list: [],
   });
 
   const [fatData, SetFatData] = useState<macroData>({
     type: "fat",
     total: 0,
-    expected: 100,
+    // @ts-ignore: Unreachable code error
+    expected: results.fat,
     list: [],
   });
 
@@ -153,6 +264,8 @@ function App() {
   );
 }
 
+
+
 function Header(props: any) {
 
   return (
@@ -256,6 +369,8 @@ type dataProp = {
   type: any;
   expected: any;
 };
+
+
 
 function Calculations({ listFn, type }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
@@ -373,7 +488,7 @@ function InfoForm() {
 
   const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age", "Days"];
 
-  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre", "Sodium"];
+  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre"];
 
   interface FormData {
     [key: string]: string;

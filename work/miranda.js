@@ -46,13 +46,13 @@ const requestAPI = async (weight, quantity, name) => {
 
 // function to calculate the nutrition that the user should consume
 // weight is in kg, height is in cm, age is in years. protein, carbs, fat, and fibre are in grams
-const calculateNutrition = (gender, weight, height, age, calories, protein, carbs, fat, fibre) => {
+const calculateNutrition = (gender, weight, height, age, calories, protein, carbs, fat, fibre, days) => {
 
     // calculate BMR (basal metabolic rate) which is the number of calories burned at rest
     if (gender == "Male") {
-        let bmr = 13.397 * weight + 4.799 * height - 5.677 * age + 88.362;
+        let bmr = (13.397 * weight + 4.799 * height - 5.677 * age + 88.362)*days;
     } else {
-        let bmr = 9.247 * weight + 3.098 * height - 4.33 * age + 447.593;
+        let bmr = (9.247 * weight + 3.098 * height - 4.33 * age + 447.593)*days;
     }
 
     if (calories != null) {  // is user doesnt specifiy calories, we calculate it for them
@@ -60,19 +60,19 @@ const calculateNutrition = (gender, weight, height, age, calories, protein, carb
     };
 
     if (protein != null) {
-        protein = (calories * 0.2)/4; // calculates protein in grams
+        protein = ((calories * 0.2)/4)*days; // calculates protein in grams
     };
 
     if (fat != null) {   // calculates fat in grams
-        fat = (calories * 0.3)/9;
+        fat = ((calories * 0.3)/9)*days;
     };
 
     if (carbs != null) {  // calculates carbs in grams
-        carbs = (calories * 0.5)/4;
+        carbs = ((calories * 0.5)/4)*days;
     };
 
     if (fibre != null) {  // calculates fibre in grams
-        fibre = (calories/1000)*14;
+        fibre = ((calories/1000)*14)*days;
     }
 
     // returns an object with all the nutrition values that the user should consume
