@@ -321,7 +321,7 @@ function Overview({ listFn, type, realData, param }: calcProp) {
                   Math.round(10 * Math.abs(data.expected - dailyTotal)) / 10 + (type === "calories" ? "" : "g")
                 } ${
                     data.expected > dailyTotal ? "more" : "less"
-                  } ${type} per meal to hit your goal of ${
+                  } ${type} per day to hit your goal of ${
                     data.expected + (type === "calories" ? "" : "g")
                   }`}
             </p>
@@ -426,7 +426,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
                 <div className="divider"></div>
                 <div className="detail-total">
                   <h2>{dailyTotal}{type === "calories" ?"": "g"}</h2>
-                  <h3>total per serving</h3>
+                  <h3>total per day</h3>
                 </div>
               </>
             )}
