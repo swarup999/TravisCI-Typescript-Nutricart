@@ -314,7 +314,7 @@ function Overview({ listFn, type, realData, param }: calcProp) {
                 ? ""
                 : `
                 You need ${
-                  Math.round(10 * Math.abs(data.expected * param - data.total) / 10) + (type === "calories" ? "" : "g")
+                  Math.round(10 * Math.abs(data.expected * param - data.total)) / 10 + (type === "calories" ? "" : "g")
                 } ${
                     data.expected * param > data.total ? "more" : "less"
                   } ${type} per meal to hit your goal of ${

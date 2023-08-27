@@ -109,7 +109,7 @@ function onPopupOpen(html) {
 
       // itemValue is a promise so we need to wait for it to resolve
       itemValue.then(function(result) {
-          item['calories'] = result['calories'];
+          item['calories'] = Math.round(result['calories']);
           item['fat'] = Math.round(result['fat']*10)/10;
           item['protein'] = Math.round(result['protein']*10)/10;
           item['carbs'] = Math.round(result['carbs']*10)/10;
