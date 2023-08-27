@@ -1,20 +1,20 @@
-# NutriCart <img src="src/assets/logo.svg" title="NutriCart" alt="NutriCart" width="20" height="20"/>
+# <img src="public/logo512.png" title="NutriCart" alt="NutriCart" width="20" height="20"/> NutriCart 
 
-It is getting more and more popular for people to eat healthy among the young generations. Mostly due to the social media influence and other factors such as memes and gym cultures.
+It is getting more and more popular for people to eat healthily among the young generations. Mostly due to the social media influence and other factors such as memes and gym cultures.
 
 <p align='center'>
     <img src="https://i.ytimg.com/vi/Ux5cQbO_ybw/maxresdefault.jpg" width=300><br> 
 </p>
 
-However it is tedious and repetitive to calculate the macro nutrient intake for different needs per person every meal. 
+However, it is tedious and repetitive to calculate the macronutrient intake for different needs per person every meal. 
 
-We introduce **NutriCart** - A convenient chrome extension that act as a tracker and calculator when you are shopping your groceries in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront).
+We introduce **NutriCart** - A convenient Chrome extension that acts as a tracker and calculator when you're shopping for your groceries in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront).
 
 <p align='center'>
     <img src="" width=300>UI <br> 
 </p>
 
-To use this extension, you can simply setting up your goals in the extension, everytime you checkout it is going to calculate whether this week's grocery is going to fulfill your target.  
+To use this extension, you can simply set up your goals in the extension, and every time you checkout it will calculate whether this week's groceries is going to fulfill your target.  
 
 <p align='center'>
     
@@ -41,7 +41,7 @@ To use this extension, you can simply setting up your goals in the extension, ev
 <br>
 
 # How to run this project (for developers)
-1. Install the dependncies, make sure node.js and npm is installed
+1. Install the dependencies, make sure node.js and npm is installed
 ```
 npm install 
 ```
@@ -49,7 +49,7 @@ npm install
 ```
 npm run build
 ```
-3. Now go to open your chrome browser and type `chrome://extensions/` in your search bar and turn on the developer mode
+3. Now go to open your Chrome browser and type `chrome://extensions/` in your search bar and turn on the developer mode
 4. Click on `Load unpacked` button and select the `build` folder in the project directory
-5. Now you should see the extension in your chrome browser
+5. Now you should see the extension in your Chrome browser
 

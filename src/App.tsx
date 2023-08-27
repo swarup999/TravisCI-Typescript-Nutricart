@@ -8,6 +8,8 @@ import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
 //import { on } from "events";
 
+const capitalizeStr = (string:any) => string.charAt(0).toUpperCase() + string.slice(1);
+
 type foodItem = {
   name: string;
   weight: number;
@@ -42,35 +44,35 @@ function App() {
   const [proteinData, SetProteinData] = useState<macroData>({
     type: "protein",
     total: 0,
-    expected: 50 * days,
+    expected: 50,
     list: [],
   });
 
   const [fatData, SetFatData] = useState<macroData>({
     type: "fat",
     total: 0,
-    expected: 65 * days,
+    expected: 65,
     list: [],
   });
 
   const [carbsData, SetCarbsData] = useState<macroData>({
     type: "carbs",
     total: 0,
-    expected: 130 * days,
+    expected: 130,
     list: [],
   });
 
   const [fibreData, SetFibreData] = useState<macroData>({
     type: "fibre",
     total: 0,
-    expected: 25 * days,
+    expected: 25,
     list: [],
   });
 
   const [caloriesData, SetCaloriesData] = useState<macroData>({
     type: "calories",
     total: 0,
-    expected: 2250 * days,
+    expected: 2250,
     list: [],
   });
 
@@ -261,11 +263,8 @@ const calculateNutrition = ({gender, weight, height, age, calories, protein, car
 
 function Overview({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
-  const data = realData;
-  console.log(`real data is `);
-  console.log(data);
-  const BADTEXT = `Does not hit your ${type} goal per serving!`;
-  const MEDTEXT = `Almost at your ${type} goal per serving!`;
+  const BADTEXT = `Does not hit your ${type} goal per day!`;
+  const MEDTEXT = `Almost at your ${type} goal per day!`;
   const GOODTEXT = `You hit your ${type} goal!`;
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -274,19 +273,24 @@ function Overview({ listFn, type, realData, param }: calcProp) {
   //   fetchData().catch(console.error);
   // }, [listFn, data]);
 
-
-
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
+  const data = realData;
+  console.log(`real data is `);
+  console.log(data);
 
   if (data.list.length === 0) return <></>;
+
+  let dailyTotal = Math.round(10 * realData.total / param) / 10;
+
   let severity;
   let text;
-  if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05 || data.total > data.expected * param) {
-    severity = "mint";
+
+  if (Math.abs(data.expected - dailyTotal) < data.expected * 0.15) {
     text = GOODTEXT;
-  } else if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.15) {
+    severity = "mint";
+  } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
     severity = "yellow";
     text = MEDTEXT;
   } else {
@@ -314,11 +318,11 @@ function Overview({ listFn, type, realData, param }: calcProp) {
                 ? ""
                 : `
                 You need ${
-                  Math.abs(data.expected * param - data.total) + (type === "calories" ? "" : "g")
+                  Math.round(10 * Math.abs(data.expected - dailyTotal)) / 10 + (type === "calories" ? "" : "g")
                 } ${
-                    data.expected * param > data.total ? "more" : "less"
-                  } ${type} per meal to hit your goal of ${
-                    data.expected * param + (type === "calories" ? "" : "g")
+                    data.expected > dailyTotal ? "more" : "less"
+                  } ${type} per day to hit your goal of ${
+                    data.expected + (type === "calories" ? "" : "g")
                   }`}
             </p>
           </>
@@ -356,21 +360,20 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
   // }, [listFn, data]);
 
   const data = realData;
-
+  let dailyTotal = Math.round(10 * realData.total / param) / 10;
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
-
   let severity;
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05) {
+    if (Math.abs(data.expected - dailyTotal) < data.expected * 0.15) {
       severity = "mint";
-    } else if (Math.abs(data.expected * param- data.total) < data.expected * param * 0.15) {
+    } else if (Math.abs(data.expected - dailyTotal) < data.expected * 0.25) {
       severity = "yellow";
     } else {
-      console.log(data.total);
+      console.log(dailyTotal);
       console.log(data.expected);
       severity = "red";
     }
@@ -385,11 +388,11 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
             }}
             className="detail-tab"
           >
-            <h2>{type}</h2>
+            <h2>{capitalizeStr(type)}</h2>
           </a>
           {isCollapsed ? (
             <h2 className="detail-number">
-              {data.total === undefined ? " " : data.total + "g / " + data.expected * param+ "g"}
+              {dailyTotal === undefined ? " " : dailyTotal + (type === 'calories' ? "" : "g") + " / " + data.expected  + (type === 'calories' ? "" : "g") }
             </h2>
           ) : (
             ""
@@ -412,18 +415,18 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
                         <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}{type === "Calories" ? "" : "g"}</h2>
+                    <h2>{Math.round(10 * element.total / param) / 10}{type === "calories" ? "" : "g"}</h2>
                   </div>
                 ))
               : "Loading..."}
-            {data.total === undefined ? (
+            {dailyTotal === undefined ? (
               ""
             ) : (
               <>
                 <div className="divider"></div>
                 <div className="detail-total">
-                  <h2>{data.total}{type === "Calories" ?"": "g"}</h2>
-                  <h3>total per serving</h3>
+                  <h2>{dailyTotal}{type === "calories" ?"": "g"}</h2>
+                  <h3>total per day</h3>
                 </div>
               </>
             )}
