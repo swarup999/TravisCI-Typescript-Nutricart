@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import "normalize.css";
+import logo from "./assets/logo-wide.svg";
+import cog from "./assets/cog.svg";
 import { emptyObject, getProteins } from "./assets/miranda";
 import { getSupportedCodeFixes } from "typescript";
 //import onPopupOpen from "./webscrap";
@@ -11,7 +13,7 @@ type foodItem = {
   weight: number;
   src: string;
   total: number;
-}
+};
 
 type macroData = {
   type: string;
@@ -23,9 +25,14 @@ type macroData = {
 function App() {
   //onPopupOpen();
   const [name, setName] = useState("");
+  const [days, setDays] = useState(1);
   useEffect(() => {
-    chrome.storage.sync.get(['Name'], (result) => {
+    chrome.storage.sync.get(["Name"], (result) => {
       setName(result.Name);
+    });
+    chrome.storage.sync.get(['Days'], (result) => {
+      setDays(result.Days);
+      console.log(result.Days);
     });
   });
   const updateName = () => {
@@ -35,48 +42,48 @@ function App() {
   const [proteinData, SetProteinData] = useState<macroData>({
     type: "protein",
     total: 0,
-    expected: 100,
+    expected: 50 * days,
     list: [],
   });
 
   const [fatData, SetFatData] = useState<macroData>({
     type: "fat",
     total: 0,
-    expected: 100,
+    expected: 65 * days,
     list: [],
   });
 
   const [carbsData, SetCarbsData] = useState<macroData>({
     type: "carbs",
     total: 0,
-    expected: 100,
+    expected: 130 * days,
     list: [],
   });
 
   const [fibreData, SetFibreData] = useState<macroData>({
     type: "fibre",
     total: 0,
-    expected: 100,
+    expected: 25 * days,
     list: [],
   });
 
   const [caloriesData, SetCaloriesData] = useState<macroData>({
     type: "calories",
     total: 0,
-    expected: 100,
+    expected: 2250 * days,
     list: [],
   });
 
   useEffect(() => {
     const key = setInterval(() => {
-      if(globalCart.protein) {
+      if (globalCart.protein) {
         clearInterval(key);
-        let newProteinData = {...proteinData};
-        let newFatData = {...fatData};
-        let newFibreData = {...fibreData};
-        let newCaloriesData = {...caloriesData};
-        let newCarbsData = {...carbsData};
-  
+        let newProteinData = { ...proteinData };
+        let newFatData = { ...fatData };
+        let newFibreData = { ...fibreData };
+        let newCaloriesData = { ...caloriesData };
+        let newCarbsData = { ...carbsData };
+
         // @ts-ignore: Unreachable code error
         globalItems.forEach((item: any) => {
         newProteinData.list = [...newProteinData.list, 
@@ -84,7 +91,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.protein ? item.protein : 0
           }
         ];
         newFatData.list = [...newFatData.list,
@@ -92,7 +99,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.fat ? item.fat : 0
           }
         ];
         newCarbsData.list = [...newCarbsData.list,
@@ -100,7 +107,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.carbs ? item.carbs : 0
           }
         ];
         newFibreData.list = [...newFibreData.list,
@@ -108,7 +115,7 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.fibre ? item.fibre : 0
           }
         ];
         newCaloriesData.list = [...newCaloriesData.list,
@@ -116,54 +123,63 @@ function App() {
             name: item.name,
             src: item.src,
             weight: item.weight,
-            total: item.quantity
+            total: item.calories ? item.calories : 0
           }
         ];
       });
+      console.log(`days are ${days}`);
+      newProteinData.expected *= days;
       newProteinData.total += globalCart.protein;
       SetProteinData(newProteinData);
+      newFatData.expected *= days;
       newFatData.total += globalCart.fat;
       SetFatData(newFatData);
+      newFibreData.expected *= days;
       newFibreData.total += globalCart.fibre;
       SetFibreData(newFibreData);
+      newCarbsData.expected *= days;
       newCarbsData.total += globalCart.carbs;
       SetCarbsData(newCarbsData);
+      newCaloriesData.expected *= days;
       newCaloriesData.total += globalCart.calories;
       SetCaloriesData(newCaloriesData);
     }
     }, 1000);
     return () => {
       clearInterval(key);
-    }
+    };
   }, []);
+
+  let params = {};
 
   return (
     <div className="extension-container">
       <Header name={name} updateName={updateName}></Header>
       <div className="non-header">
-        {
-          !name ? <InfoForm /> :
+        {!name ? (
+          <InfoForm />
+        ) : (
           <>
             <div className="overviews">
               <h2>Heads Up!</h2>
-              <Overview listFn={getProteins} type={"calories"} realData={caloriesData}></Overview>
-              <Overview listFn={getProteins} type={"protein"} realData={proteinData}></Overview>
-              <Overview listFn={getProteins} type={"carbs"} realData={carbsData}></Overview>
-              <Overview listFn={getProteins} type={"fat"} realData={fatData}></Overview>
-              <Overview listFn={getProteins} type={"fibre"} realData={fibreData}></Overview>
+              <Overview listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fat"} realData={fatData} param={days}></Overview>
+              <Overview listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Overview>
             </div>
             <div className="calculations">
               <div className="calculation-header">
                 <h2>Details</h2>
               </div>
-              <Calculations listFn={getProteins} type={"Calories"} realData={caloriesData}></Calculations>
-              <Calculations listFn={getProteins} type={"Protein"} realData={proteinData}></Calculations>
-              <Calculations listFn={getProteins} type={"Carbs"} realData={carbsData}></Calculations>
-              <Calculations listFn={getProteins} type={"Fat"} realData={fatData}></Calculations>
-              <Calculations listFn={getProteins} type={"Fibre"} realData={fibreData}></Calculations>
+              <Calculations listFn={getProteins} type={"calories"} realData={caloriesData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"protein"} realData={proteinData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"carbs"} realData={carbsData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fat"} realData={fatData} param={days}></Calculations>
+              <Calculations listFn={getProteins} type={"fibre"} realData={fibreData} param={days}></Calculations>
             </div>
           </>
-        }
+        )}
         <Footer></Footer>
       </div>
     </div>
@@ -184,8 +200,8 @@ function Header(props: any) {
       <div className="header">
         <div className="header-text">
           <div className="logo">
-            {/* <img src="https://placehold.co/300x60" /> */}
-            <h1>nutricart</h1>
+            <img style={{ margin: "10px 0px", width: "150px" }} src={logo} />
+            {/* <h1>nutricart</h1> */}
           </div>
           {props.name && (
             <div className="subheader">
@@ -195,17 +211,55 @@ function Header(props: any) {
         </div>
 
         <div className="settings">
-          <a title="Reset User Info" onClick={() => {
-            chrome.storage.sync.set({ ['Name']: ""});
-            props.updateName();
-          }}><img src="https://placehold.co/60" alt="" /></a>
+          <a
+            title="Reset User Info"
+            onClick={() => {
+              chrome.storage.sync.set({ ["Name"]: "" });
+              props.updateName();
+            }}
+          >
+            <div className="img-container" style={{height: "60px", width: "60px"}}><img src={cog} alt="" /></div>
+          </a>
         </div>
       </div>
     </>
   );
 }
 
-function Overview({ listFn, type, realData }: calcProp) {
+const calculateNutrition = ({gender, weight, height, age, calories, protein, carbs, fat, fibre}: any) => {
+  let bmr;
+  // calculate BMR (basal metabolic rate) which is the number of calories burned at rest
+  if (gender == "Male") {
+      let bmr = 13.397 * weight + 4.799 * height - 5.677 * age + 88.362;
+  } else {
+      let bmr = 9.247 * weight + 3.098 * height - 4.33 * age + 447.593;
+  }
+
+  if (calories != null) {  // is user doesnt specifiy calories, we calculate it for them
+      calories = bmr;
+  };
+
+  if (protein != null) {
+      protein = (calories * 0.2)/4; // calculates protein in grams
+  };
+
+  if (fat != null) {   // calculates fat in grams
+      fat = (calories * 0.3)/9;
+  };
+
+  if (carbs != null) {  // calculates carbs in grams
+      carbs = (calories * 0.5)/4;
+  };
+
+  if (fibre != null) {  // calculates fibre in grams
+      fibre = (calories/1000)*14;
+  }
+
+  // returns an object with all the nutrition values that the user should consume
+  return {calories: calories, protein: protein, carbs: carbs, fat: fat, fibre: fibre};
+}
+
+function Overview({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
   const data = realData;
   console.log(`real data is `);
@@ -220,18 +274,19 @@ function Overview({ listFn, type, realData }: calcProp) {
   //   fetchData().catch(console.error);
   // }, [listFn, data]);
 
+
+
   function toggleCollapse() {
     setCollapsed(!isCollapsed);
   }
 
-
   if (data.list.length === 0) return <></>;
   let severity;
   let text;
-  if (Math.abs(data.expected - data.total) < data.expected * 0.05) {
+  if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05 || data.total > data.expected * param) {
     severity = "mint";
     text = GOODTEXT;
-  } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
+  } else if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.15) {
     severity = "yellow";
     text = MEDTEXT;
   } else {
@@ -255,8 +310,16 @@ function Overview({ listFn, type, realData }: calcProp) {
         ) : (
           <>
             <p>
-              You need {Math.max(0, data.expected - data.total) + "g"} more {type} per meal to hit your goal of{" "}
-              {data.expected + "g"}
+              {severity === "mint"
+                ? ""
+                : `
+                You need ${
+                  Math.abs(data.expected * param - data.total) + (type === "calories" ? "" : "g")
+                } ${
+                    data.expected * param > data.total ? "more" : "less"
+                  } ${type} per meal to hit your goal of ${
+                    data.expected * param + (type === "calories" ? "" : "g")
+                  }`}
             </p>
           </>
         )}
@@ -270,6 +333,7 @@ type calcProp = {
   listFn: Function;
   type: any;
   realData: any;
+  param: any;
 };
 
 type dataProp = {
@@ -279,7 +343,7 @@ type dataProp = {
   expected: any;
 };
 
-function Calculations({ listFn, type, realData }: calcProp) {
+function Calculations({ listFn, type, realData, param }: calcProp) {
   const [isCollapsed, setCollapsed] = useState(false);
 
   // const [data, setData] = useState<dataProp>(emptyObject);
@@ -301,9 +365,9 @@ function Calculations({ listFn, type, realData }: calcProp) {
   if (data.total === undefined) {
     severity = "";
   } else {
-    if (Math.abs(data.expected - data.total) < data.expected * 0.05 || data.total > data.expected) {
+    if (Math.abs(data.expected * param - data.total) < data.expected * param * 0.05) {
       severity = "mint";
-    } else if (Math.abs(data.expected - data.total) < data.expected * 0.15) {
+    } else if (Math.abs(data.expected * param- data.total) < data.expected * param * 0.15) {
       severity = "yellow";
     } else {
       console.log(data.total);
@@ -325,7 +389,7 @@ function Calculations({ listFn, type, realData }: calcProp) {
           </a>
           {isCollapsed ? (
             <h2 className="detail-number">
-              {data.total === undefined ? " " : data.total + "g / " + data.expected + "g"}
+              {data.total === undefined ? " " : data.total + "g / " + data.expected * param+ "g"}
             </h2>
           ) : (
             ""
@@ -340,13 +404,15 @@ function Calculations({ listFn, type, realData }: calcProp) {
               ? data.list.map((element: any, index: any) => (
                   <div className="detail-element" key={index}>
                     <div className="item-name-icon">
-                      <img src={element.src} />
+                      <div className="img-container">
+                        <img src={element.src} />
+                      </div>
                       <div className="item-name">
                         <h3>{element.name}</h3>
-                        <h4>{element.weight}kg</h4>
+                        <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}g</h2>
+                    <h2>{element.total}{type === "Calories" ? "" : "g"}</h2>
                   </div>
                 ))
               : "Loading..."}
@@ -356,7 +422,7 @@ function Calculations({ listFn, type, realData }: calcProp) {
               <>
                 <div className="divider"></div>
                 <div className="detail-total">
-                  <h2>{data.total}g</h2>
+                  <h2>{data.total}{type === "Calories" ?"": "g"}</h2>
                   <h3>total per serving</h3>
                 </div>
               </>
@@ -405,10 +471,11 @@ function InfoFormCSSTEST() {
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder={"Name"}
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -533,7 +600,9 @@ function InfoFormCSSTEST() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "
@@ -566,7 +635,7 @@ function InfoForm() {
 
   const requiredInfo = ["Name", "Gender", "Weight", "Height", "Age", "Days"];
 
-  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre", "Sodium"];
+  const advancedInfo = ["Calories", "Protein", "Carbs", "Fat", "Fibre"];
 
   interface FormData {
     [key: string]: string;
@@ -577,21 +646,22 @@ function InfoForm() {
 
   return (
     <>
-    <form
-      onSubmit={(e) => {
-        Object.keys(formData).forEach((key: any) => {
-          chrome.storage.sync.set({ [key]: formData[key] });
-        });
-      }}
-    >
-      {stage === 0 ? (
+      <form
+        onSubmit={(e) => {
+          Object.keys(formData).forEach((key: any) => {
+            chrome.storage.sync.set({ [key]: formData[key] });
+          });
+        }}
+      >
+        {stage === 0 ? (
           <>
             <h2 style={{ textAlign: "center" }}>Let's get to know you a bit more.</h2>
             <div id="name-container" key="Name">
-              <label>How shall we address you?</label>
+              <label>How should we address you?</label>
               <input
                 id="name-input"
                 type="text"
+                placeholder="Your name"
                 required={true}
                 onChange={(e) => {
                   let newFormData = { ...formData };
@@ -716,7 +786,9 @@ function InfoForm() {
               ></input>
               <label> days.</label>
             </div>
-            <button className="init-button" type="submit">Submit</button>
+            <button className="init-button" type="submit">
+              Submit
+            </button>
           </>
         ) : (
           " "

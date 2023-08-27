@@ -109,6 +109,11 @@ function onPopupOpen(html) {
 
       // itemValue is a promise so we need to wait for it to resolve
       itemValue.then(function(result) {
+          item['calories'] = result['calories'];
+          item['fat'] = result['fat'];
+          item['protein'] = result['protein'];
+          item['carbs'] = result['carbs'];
+          item['fibre'] = result['fibre'];
           cart = sumNutrition(result, cart);
       });
   };
