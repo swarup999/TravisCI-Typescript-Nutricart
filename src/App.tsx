@@ -218,7 +218,7 @@ function Header(props: any) {
               props.updateName();
             }}
           >
-            <img src={cog} alt="" />
+            <div className="img-container" style={{height: "60px", width: "60px"}}><img src={cog} alt="" /></div>
           </a>
         </div>
       </div>
@@ -412,7 +412,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
                         <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}{type === "Calories" ?"": "g"}</h2>
+                    <h2>{element.total}{type === "Calories" ? "" : "g"}</h2>
                   </div>
                 ))
               : "Loading..."}

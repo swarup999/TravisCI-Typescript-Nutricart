@@ -55,6 +55,7 @@ body {
 }
 
 .header {
+  min-height: 107px;
   display: flex;
   justify-content: space-between;
 }
@@ -65,6 +66,13 @@ body {
 .logo h1 {
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .non-header {
@@ -342,3 +350,4 @@ form select {
  height: 100%; 
  object-fit: contain;
 }
+
