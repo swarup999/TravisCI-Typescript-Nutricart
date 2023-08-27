@@ -8,7 +8,7 @@ import { on } from "events";
 
 function App() {
   //onPopupOpen();
-
+  console.log(globalVar);
   const [name, setName] = useState("");
   useEffect(() => {
     chrome.storage.sync.get(['Name'], (result) => {

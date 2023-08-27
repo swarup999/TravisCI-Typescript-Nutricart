@@ -1,7 +1,8 @@
+let globalVar = 12;
 function grabItemsFromHTML(html) {
   console.log("grabbing items from HTML");
   var items = [];
-
+  globalVar = 14;
   // Create a temporary div to parse the HTML
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
