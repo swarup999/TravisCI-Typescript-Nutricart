@@ -58,9 +58,10 @@ body {
   min-height: 107px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .subheader h3 {
-  margin-top: 0px;
+  margin: 0px 0px 5px;
 }
 
 .logo h1 {
@@ -68,12 +69,6 @@ body {
   margin-bottom: 10px;
 }
 
-.header-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 
 .non-header {
   box-shadow: rgb(0, 0, 0, 0.16) 0px 2px 8px;
