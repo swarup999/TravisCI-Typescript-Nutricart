@@ -314,7 +314,7 @@ function Overview({ listFn, type, realData, param }: calcProp) {
                 ? ""
                 : `
                 You need ${
-                  Math.abs(data.expected * param - data.total) + (type === "calories" ? "" : "g")
+                  Math.round(10 * Math.abs(data.expected * param - data.total) / 10) + (type === "calories" ? "" : "g")
                 } ${
                     data.expected * param > data.total ? "more" : "less"
                   } ${type} per meal to hit your goal of ${
@@ -389,7 +389,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
           </a>
           {isCollapsed ? (
             <h2 className="detail-number">
-              {data.total === undefined ? " " : data.total + "g / " + data.expected * param+ "g"}
+              {data.total === undefined ? " " : Math.round(10 * data.total )/ 10 + (type === 'calories' ? "" : "g") + " / " + data.expected * param + (type === 'calories' ? "" : "g") }
             </h2>
           ) : (
             ""
@@ -412,7 +412,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
                         <h4>{element.weight}</h4>
                       </div>
                     </div>
-                    <h2>{element.total}{type === "Calories" ? "" : "g"}</h2>
+                    <h2>{element.total}{type === "calories" ? "" : "g"}</h2>
                   </div>
                 ))
               : "Loading..."}
@@ -422,7 +422,7 @@ function Calculations({ listFn, type, realData, param }: calcProp) {
               <>
                 <div className="divider"></div>
                 <div className="detail-total">
-                  <h2>{data.total}{type === "Calories" ?"": "g"}</h2>
+                  <h2>{data.total}{type === "calories" ?"": "g"}</h2>
                   <h3>total per serving</h3>
                 </div>
               </>
