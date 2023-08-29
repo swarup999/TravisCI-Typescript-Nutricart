@@ -1,4 +1,4 @@
-<img src="src/assets/logo-wide.png" title="NutriCart" alt="NutriCart" width="20" height="20"/>
+<img src="src/assets/logo-wide.png" title="NutriCart" alt="NutriCart"/>
 # NutriCart
 
 In the busy modern lives of young adults, it is not always easy or convenient to maintain a healthy and nutritious diet.
