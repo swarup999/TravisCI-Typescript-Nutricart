@@ -16,7 +16,7 @@ Currently, NutriCart is available for Instacart
     <img src="pictures/login.png" width=400><br> 
 </p>
 
-To use this extension, you can simply set up your goals in the extension, and every time you checkout it will calculate whether this week's groceries is going to fulfill your target.  
+To use this extension, you can simply set up your goals in the extension, and every time you checkout it will calculate whether groceries in your shopping cart will fufill your nutritional goals/needs.
 
 <p align='center'>
     
