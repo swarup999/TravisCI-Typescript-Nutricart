@@ -35,10 +35,10 @@ To use this extension, you can simply set up your goals in the extension, and ev
 <br><img src="pictures/extension.png", width=400>
 </p><br>
 
-3. If this is your first time using it, you will need to set up your user information to calculate your macro nutrient need 
+3. If this is your first time using it, you will need to set up your user information to calculate your nutritional needs.
 <p align='center'><br><img src="pictures/open.png" width=400></p>
 
-4. Now you should be able to see all the items in the cart and the total macro nutrients of this times' purchase
+4. If the items in your shopping cart do not meet your nutritional needs, alerts will appear to let you know how much other or under you are from meeting your goal. You can also see all the items in the cart and how much they contribute to each nutrient category.
 <p align='center'><br><img src="pictures/calculator.png" width=400></p>
 <p align='center'><img src="pictures/front.png" width=400></p>
 
