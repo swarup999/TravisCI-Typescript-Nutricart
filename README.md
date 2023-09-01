@@ -37,6 +37,8 @@ To use this extension, you can simply set up your goals in the extension, and ev
 
 3. If this is your first time using it, you will need to set up your user information to calculate your nutritional needs. You can also better personalize your nutritional goals by manually setting them up.
 <p align='center'><br><img src="pictures/open.png" width=400></p>
+<p align='center'><br><img src="pictures/personalInfo.png" width=400></p>
+<p align='center'><br><img src="pictures/advancedInfo.png" width=400></p>
 
 4. If the items in your shopping cart do not meet your nutritional needs, alerts will appear to let you know how much other or under you are from meeting your goal. You can also see all the items in the cart and how much they contribute to each nutrient category.
 <p align='center'><img src="pictures/front.png" width=400></p>
