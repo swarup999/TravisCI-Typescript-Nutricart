@@ -8,7 +8,9 @@ In the busy modern lives of young adults, it is not always easy or convenient to
 With the rise of online grocery shopping, we wanted to create a tool that empowers users to make informed nutritional choices effortlessly.
 
 We introduce **NutriCart** -  your online grocery companion. Helping you balance health and convenience in every click, by seamlessly tracking calories, protein, fibre and more!
-(https://www.instacart.ca/store/real-canadian-superstore/storefront).
+
+Currently, NutriCart is available for Instacart
+(https://www.instacart.ca).
 
 <p align='center'>
     <img src="pictures/login.png" width=400><br> 
