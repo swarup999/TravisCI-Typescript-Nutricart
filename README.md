@@ -28,14 +28,14 @@ To use this extension, you can simply set up your goals in the extension, and ev
 1. Do your regular shopping in [instacart](https://www.instacart.ca/store/real-canadian-superstore/storefront)
 <p align='center'><br><img src="pictures/instacart.png" width=400></p>
 
-2. When you click the chekout button, if you see the pop out checkout tab, you can now click the extension button
+2. When you click the checkout button, if you see the pop-out checkout tab, you can now click the extension button
 <p align='center'>
 <br><img src="pictures/instabutton.png", width=400>
 <br><img src="pictures/cart.png", width=400>
 <br><img src="pictures/extension.png", width=400>
 </p><br>
 
-3. If this is your first time using it, you will need to set up your user information to calculate your nutritional needs.
+3. If this is your first time using it, you will need to set up your user information to calculate your nutritional needs. You can also better personalize your nutritional goals by manually setting them up.
 <p align='center'><br><img src="pictures/open.png" width=400></p>
 
 4. If the items in your shopping cart do not meet your nutritional needs, alerts will appear to let you know how much other or under you are from meeting your goal. You can also see all the items in the cart and how much they contribute to each nutrient category.
