@@ -1,14 +1,26 @@
 language: node_js
 node_js:
-  - "14"
+  - "16"  # Updated to a more recent Node.js version
+  
+install:
+  - npm ci  # Recommended for CI environments
 
 jobs:
   include:
     - stage: SAST Check
+      before_script:
+        - npm ci  # Ensure dependencies are installed
       script:
         - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip"
         - |
-          RESPONSE=$(curl -X POST             -H "Client-ID: $INTRUCEPT_CLIENT_ID"             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET"             -F "projectZipFile=@project.zip"             -F "applicationId=$INTRUCEPT_APPLICATION_ID"             -F "scanName=Typescrip Nutricart SAST Scan - $TRAVIS_COMMIT"             -F "language=typescript"             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
+          RESPONSE=$(curl -X POST \
+            -H "Client-ID: $INTRUCEPT_CLIENT_ID" \
+            -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
+            -F "projectZipFile=@project.zip" \
+            -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
+            -F "scanName=Typescript Nutricart SAST Scan - $TRAVIS_COMMIT" \
+            -F "language=typescript" \
+            https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
           
           CAN_PROCEED=$(echo $RESPONSE | jq -r '.canProceed')
           VULNS_TABLE=$(echo $RESPONSE | jq -r '.vulnsTable')
@@ -19,12 +31,21 @@ jobs:
             echo "SAST scan failed. Please review the security issues."
             exit 1
           fi
-
+    
     - stage: SCA Check
+      before_script:
+        - npm ci  # Ensure dependencies are installed
       script:
         - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip"
         - |
-          RESPONSE=$(curl -X POST             -H "Client-ID: $INTRUCEPT_CLIENT_ID"             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET"             -F "projectZipFile=@project.zip"             -F "applicationId=$INTRUCEPT_APPLICATION_ID"             -F "scanName=Typescript nutricart SCA Scan - $TRAVIS_COMMIT"             -F "language=typescript"             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
+          RESPONSE=$(curl -X POST \
+            -H "Client-ID: $INTRUCEPT_CLIENT_ID" \
+            -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
+            -F "projectZipFile=@project.zip" \
+            -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
+            -F "scanName=Typescript Nutricart SCA Scan - $TRAVIS_COMMIT" \
+            -F "language=typescript" \
+            https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
           
           CAN_PROCEED=$(echo $RESPONSE | jq -r '.canProceed')
           VULNS_TABLE=$(echo $RESPONSE | jq -r '.vulnsTable')
