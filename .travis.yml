@@ -7,7 +7,7 @@ jobs:
     - stage: SAST Check
       script:
         - echo "Preparing for SAST Scan..."
-        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip" > /dev/null 2>&1
+        - zip -r project.zip . -x "**/.git*" "**/.git/**" "**/*node_modules*" "**/*node_modules/**" "**/*.zip" > /dev/null 2>&1
         - echo "Initiating SAST scan. This may take a few minutes..."
         - |
           # Start progress indicator in the background
@@ -48,7 +48,7 @@ jobs:
     - stage: SCA Check
       script:
         - echo "Preparing for SCA Scan..."
-        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip" > /dev/null 2>&1
+        - zip -r project.zip . -x "**/.git*" "**/.git/**" "**/*node_modules*" "**/*node_modules/**" "**/*.zip" > /dev/null 2>&1
         - echo "Initiating SCA scan. This may take a few minutes..."
         - |
           # Start progress indicator in the background
