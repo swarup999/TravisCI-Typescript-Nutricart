@@ -27,7 +27,7 @@ jobs:
             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Csharp Dvcsharp SAST Scan - $TRAVIS_COMMIT" \
+            -F "scanName=Typescript- Nutricart SAST Scan - $TRAVIS_COMMIT" \
             -F "language=c#" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
 
@@ -68,7 +68,7 @@ jobs:
             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Csharp Dvcsharp SCA Scan - $TRAVIS_COMMIT" \
+            -F "scanName=Typescript- Nutricart SCA Scan - $TRAVIS_COMMIT" \
             -F "language=c#" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
 
