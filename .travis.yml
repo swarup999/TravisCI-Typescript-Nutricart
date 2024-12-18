@@ -87,5 +87,5 @@ jobs:
           set -e
 
       - stage: Install Dependencies
-        script:
-          - npm install  # Or npm ci if you prefer
+          script:
+            - npm install  
