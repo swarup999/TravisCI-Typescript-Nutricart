@@ -6,82 +6,32 @@ jobs:
   include:
     - stage: SAST Check
       script:
-        - echo "Preparing for SAST Scan..."
-        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip" > /dev/null 2>&1
-        - echo "Initiating SAST scan. This may take a few minutes..."
+        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip"
         - |
-          # Start progress indicator in the background
-          show_progress() {
-            while true; do
-              echo -n "." >&1
-              sleep 1
-            done
-          }
-
-          show_progress &  # Run the progress function in the background
-          PROGRESS_PID=$!   # Capture the process ID to stop it later
-        - |
-          set +e
-          RESPONSE=$(curl -s -X POST \
-            -H "Client-ID: $INTRUCEPT_CLIENT_ID" \
-            -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
-            -F "projectZipFile=@project.zip" \
-            -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Typescript-Nutricart SAST Scan - $TRAVIS_COMMIT" \
-            -F "language=c#" \
-            https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
-
-          # Stop the progress indicator
-          kill $PROGRESS_PID
-          echo ""  # Move to a new line
+          RESPONSE=$(curl -X POST             -H "Client-ID: $INTRUCEPT_CLIENT_ID"             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET"             -F "projectZipFile=@project.zip"             -F "applicationId=$INTRUCEPT_APPLICATION_ID"             -F "scanName=Typescrip Nutricart SAST Scan - $TRAVIS_COMMIT"             -F "language=typescript"             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
           
-          if [ -z "$RESPONSE" ]; then
-            echo "Error: Empty response received from SAST scan API"
-            exit 1
-          fi
-
-          VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable // "No vulnerabilities found"')
+          CAN_PROCEED=$(echo $RESPONSE | jq -r '.canProceed')
+          VULNS_TABLE=$(echo $RESPONSE | jq -r '.vulnsTable')
           echo "Vulnerabilities Table:"
           echo "$VULNS_TABLE"
-          set -e
+          
+          if [ "$CAN_PROCEED" != "true" ]; then
+            echo "SAST scan failed. Please review the security issues."
+            exit 1
+          fi
 
     - stage: SCA Check
       script:
-        - echo "Preparing for SCA Scan..."
-        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip" > /dev/null 2>&1
-        - echo "Initiating SCA scan. This may take a few minutes..."
+        - zip -r project.zip . -x "*.git*" "*/node_modules/*" "*/vendor/*" "*.zip"
         - |
-          # Start progress indicator in the background
-          show_progress() {
-            while true; do
-              echo -n "." >&1
-              sleep 1
-            done
-          }
-
-          show_progress &  # Run the progress function in the background
-          PROGRESS_PID=$!   # Capture the process ID to stop it later
-        - |
-          set +e
-          RESPONSE=$(curl -s -X POST \
-            -H "Client-ID: $INTRUCEPT_CLIENT_ID" \
-            -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
-            -F "projectZipFile=@project.zip" \
-            -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Typescript-Nutricart SCA Scan - $TRAVIS_COMMIT" \
-            -F "language=c#" \
-            https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
-
-          # Stop the progress indicator
-          kill $PROGRESS_PID
-          echo ""  # Move to a new line
+          RESPONSE=$(curl -X POST             -H "Client-ID: $INTRUCEPT_CLIENT_ID"             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET"             -F "projectZipFile=@project.zip"             -F "applicationId=$INTRUCEPT_APPLICATION_ID"             -F "scanName=Typescript nutricart SCA Scan - $TRAVIS_COMMIT"             -F "language=typescript"             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
           
-          if [ -z "$RESPONSE" ]; then
-            echo "Error: Empty response received from SCA scan API"
-            exit 1
-          fi
-
-          VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable // "No vulnerabilities found"')
+          CAN_PROCEED=$(echo $RESPONSE | jq -r '.canProceed')
+          VULNS_TABLE=$(echo $RESPONSE | jq -r '.vulnsTable')
           echo "Vulnerabilities Table:"
           echo "$VULNS_TABLE"
-          set -e
+          
+          if [ "$CAN_PROCEED" != "true" ]; then
+            echo "SCA scan failed. Please review the dependency issues."
+            exit 1
+          fi
