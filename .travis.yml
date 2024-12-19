@@ -28,7 +28,6 @@ jobs:
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
             -F "scanName=Typescript- Nutricart SAST Scan - $TRAVIS_COMMIT" \
-            -F "language=c#" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
 
           # Stop the progress indicator
@@ -69,7 +68,6 @@ jobs:
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
             -F "scanName=Typescript- Nutricart SCA Scan - $TRAVIS_COMMIT" \
-            -F "language=c#" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
 
           # Stop the progress indicator
