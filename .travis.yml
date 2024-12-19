@@ -18,7 +18,7 @@ jobs:
             done
           }
 
-          show_progress &  # Run the progress function in the background
+          show_progress &  # Run the progress function in the background.
           PROGRESS_PID=$!   # Capture the process ID to stop it later
         - |
           set +e
