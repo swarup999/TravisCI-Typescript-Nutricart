@@ -1,7 +1,6 @@
 language: node_js
 node_js:
   - "16"
-
 jobs:
   include:
     - stage: SAST Check
@@ -17,7 +16,6 @@ jobs:
               sleep 1
             done
           }
-
           show_progress &  # Run the progress function in the background.
           PROGRESS_PID=$!   # Capture the process ID to stop it later
         - |
@@ -27,9 +25,8 @@ jobs:
             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Typescript- Nutricart SAST Scan - $TRAVIS_COMMIT" \
+            -F "scanName=Typescript SAST Scan - $TRAVIS_COMMIT" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sast-scans)
-
           # Stop the progress indicator
           kill $PROGRESS_PID
           echo ""  # Move to a new line
@@ -39,9 +36,17 @@ jobs:
             exit 1
           fi
 
-          VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable // "No vulnerabilities found"')
-          echo "Vulnerabilities Table:"
-          echo "$VULNS_TABLE"
+          # Check for error in response
+          ERROR=$(echo "$RESPONSE" | jq -r '.error // empty')
+          if [ ! -z "$ERROR" ]; then
+            echo "Error: $ERROR"
+            exit 1
+          else
+            VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable')
+            echo "Vulnerabilities Table:"
+            echo "$VULNS_TABLE"
+          fi
+
           set -e
 
     - stage: SCA Check
@@ -57,7 +62,6 @@ jobs:
               sleep 1
             done
           }
-
           show_progress &  # Run the progress function in the background
           PROGRESS_PID=$!   # Capture the process ID to stop it later
         - |
@@ -67,9 +71,8 @@ jobs:
             -H "Client-Secret: $INTRUCEPT_CLIENT_SECRET" \
             -F "projectZipFile=@project.zip" \
             -F "applicationId=$INTRUCEPT_APPLICATION_ID" \
-            -F "scanName=Typescript- Nutricart SCA Scan - $TRAVIS_COMMIT" \
+            -F "scanName=Typescript SCA Scan - $TRAVIS_COMMIT" \
             https://appsecops-api.intruceptlabs.com/api/v1/integrations/sca-scans)
-
           # Stop the progress indicator
           kill $PROGRESS_PID
           echo ""  # Move to a new line
@@ -79,9 +82,15 @@ jobs:
             exit 1
           fi
 
-          VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable // "No vulnerabilities found"')
-          echo "Vulnerabilities Table:"
-          echo "$VULNS_TABLE"
-          set -e
+          # Check for error in response
+          ERROR=$(echo "$RESPONSE" | jq -r '.error // empty')
+          if [ ! -z "$ERROR" ]; then
+            echo "Error: $ERROR"
+            exit 1
+          else
+            VULNS_TABLE=$(echo "$RESPONSE" | jq -r '.vulnsTable')
+            echo "Vulnerabilities Table:"
+            echo "$VULNS_TABLE"
+          fi
 
-     
+          set -e
